@@ -14,17 +14,17 @@ const Login = () => {
   const onLogin = async () => {
     try {
       const data = await handleLogin(username, password);
-      
+
       if (data.accessToken) {
         localStorage.setItem('accessToken', data.accessToken);
+        document.cookie = `accessToken=${data.accessToken}; path=/;`;
       }
 
       if (data.role === 'admin') {
-        alert('Logged in as Admin');
         router.push('/');
       } else if (data.role === 'staff') {
         alert('Logged in as Staff');
-        router.push('/'); 
+        router.push('/');
       } else {
         alert('Unknown role');
       }
