@@ -7,7 +7,7 @@ import { AppBar, Toolbar, Typography, Button, Box, Drawer, List, ListItem, ListI
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const [username, setUsername] = useState<string | null>(null);
-
+console.log(username)
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     if (storedUsername) {
@@ -64,24 +64,54 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </ListItemIcon>
               <ListItemText primary="Pet Images" />
             </ListItem>
-            <ListItem component="button" onClick={() => router.push('/appointments')}>
+            <ListItem component="button" onClick={() => router.push('/pet-heath')}>
               <ListItemIcon>
-                <img src="/icons/calendar.svg" alt="Appointments" width={24} height={24} />
+                <img src="/icons/health.svg" alt="Pet Heath" width={24} height={24} />
               </ListItemIcon>
-              <ListItemText primary="Appointments" />
+              <ListItemText primary="Pet Heath" />
             </ListItem>
-            <ListItem component="button" onClick={() => router.push('/clients')}>
+            <ListItem component="button" onClick={() => router.push('/adoption')}>
               <ListItemIcon>
-                <img src="/icons/clients.svg" alt="Clients" width={24} height={24} />
+                <img src="/icons/clients.svg" alt="Adoption" width={24} height={24} />
               </ListItemIcon>
-              <ListItemText primary="Clients" />
+              <ListItemText primary="Adoption" />
             </ListItem>
-            <ListItem component="button" onClick={() => router.push('/settings')}>
+            <ListItem component="button" onClick={() => router.push('/shelter')}>
+              <ListItemIcon>
+                <img src="/icons/shelter.svg" alt="Shelter" width={24} height={24} />
+              </ListItemIcon>
+              <ListItemText primary="Shelter" />
+            </ListItem>
+            <ListItem component="button" onClick={() => router.push('/donation')}>
+              <ListItemIcon>
+                <img src="/icons/donate.svg" alt="Donation" width={24} height={24} />
+              </ListItemIcon>
+              <ListItemText primary="Donation" />
+            </ListItem>
+            <ListItem component="button" onClick={() => router.push('/event')}>
+              <ListItemIcon>
+                <img src="/icons/event.svg" alt="Event" width={24} height={24} />
+              </ListItemIcon>
+              <ListItemText primary="Event" />
+            </ListItem>
+            <ListItem component="button" onClick={() => router.push('/event-images')}>
+              <ListItemIcon>
+                <img src="/icons/event-image.svg" alt="Event Images" width={24} height={24} />
+              </ListItemIcon>
+              <ListItemText primary="Event Images" />
+            </ListItem>
+            <ListItem component="button" onClick={() => router.push('/users')}>
+              <ListItemIcon>
+                <img src="/icons/user.svg" alt="User" width={24} height={24} />
+              </ListItemIcon>
+              <ListItemText primary="Users" />
+            </ListItem>
+            {/* <ListItem component="button" onClick={() => router.push('/settings')}>
               <ListItemIcon>
                 <img src="/icons/settings.svg" alt="Settings" width={24} height={24} />
               </ListItemIcon>
               <ListItemText primary="Settings" />
-            </ListItem>
+            </ListItem> */}
           </List>
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

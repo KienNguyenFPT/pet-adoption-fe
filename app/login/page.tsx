@@ -17,6 +17,7 @@ const Login = () => {
 
       if (data.accessToken) {
         localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('username', data.username);
         document.cookie = `accessToken=${data.accessToken}; path=/;`;
       }
 
