@@ -1,14 +1,22 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Box, Typography, Button, Grid, Card, CardMedia, CardContent } from '@mui/material';
-import Layout from '../components/Layout';
+import React, { useState } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+} from "@mui/material";
+import Layout from "../../components/Layout";
 
 const PetImages = () => {
   const [images, setImages] = useState<string[]>([
-    '/images/pet1.jpg',
-    '/images/pet2.jpg',
-    '/images/pet3.jpg',
+    "/images/pet1.jpg",
+    "/images/pet2.jpg",
+    "/images/pet3.jpg",
   ]);
 
   const handleAddImage = () => {
@@ -29,7 +37,12 @@ const PetImages = () => {
           {images.map((image, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
               <Card>
-                <CardMedia component="img" height="140" image={image} alt={`Pet ${index + 1}`} />
+                <CardMedia
+                  component="img"
+                  height="140"
+                  image={image}
+                  alt={`Pet ${index + 1}`}
+                />
                 <CardContent>
                   <Typography variant="body2" color="text.secondary">
                     Pet Image {index + 1}

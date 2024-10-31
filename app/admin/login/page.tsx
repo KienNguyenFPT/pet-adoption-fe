@@ -1,33 +1,35 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
-import { handleLogin } from '../services/authService';
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { handleLogin } from "../../services/authService";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const onLogin = async () => {
     try {
-      const data = await handleLogin(username, password);
+      // const passwordHash = await bcrypt.hash(password, 10);
+      const passwordHash = "12345";
+      const data = await handleLogin(email, passwordHash);
 
       if (data.accessToken) {
-        localStorage.setItem('accessToken', data.accessToken);
-        localStorage.setItem('username', data.username);
+        localStorage.setItem("accessToken", data.accessToken);
+        localStorage.setItem("username", data.username);
         document.cookie = `accessToken=${data.accessToken}; path=/;`;
       }
 
-      if (data.role === 'admin') {
-        router.push('/');
-      } else if (data.role === 'staff') {
-        alert('Logged in as Staff');
-        router.push('/');
+      if (data.role === "admin") {
+        router.push("/admin");
+      } else if (data.role === "staff") {
+        alert("Logged in as Staff");
+        router.push("/admin");
       } else {
-        alert('Unknown role');
+        alert("Unknown role");
       }
     } catch (error: any) {
       setError(error.message);
@@ -37,19 +39,19 @@ const Login = () => {
   return (
     <Box
       sx={{
-        backgroundImage: 'url(/images/background-login.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        backgroundImage: "url(/images/background-login.png)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Container
         maxWidth="xs"
         sx={{
-          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
           padding: 4,
           borderRadius: 2,
         }}
@@ -62,13 +64,13 @@ const Login = () => {
             margin="normal"
             required
             fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            autoComplete="username"
+            id="email"
+            label="Email address"
+            name="email"
+            autoComplete="emailAddress"
             autoFocus
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             margin="normal"
