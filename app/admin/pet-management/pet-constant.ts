@@ -8,7 +8,7 @@ export const TablePetColumns = [
     },
   },
   {
-    name: "name",
+    name: "petName",
     label: "Pet Name",
     options: {
       filter: true,
@@ -71,12 +71,12 @@ export const TablePetColumns = [
       sort: true,
     },
   },
-  {
-    name: "petImages",
-    label: "Images",
-    options: {
-      filter: false,
-      sort: false,
-    },
-  },
+  // {
+  //   name: "petImages",
+  //   label: "Images",
+  //   options: {
+  //     filter: false,
+  //     sort: false,
+  //   },
+  // },
 ];

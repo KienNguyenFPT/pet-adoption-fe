@@ -10,12 +10,18 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  /**
+ * admin:
+    luandktss170438@fpt.edu.vn
+    123
 
+  user:
+    choben13052003@gmail.com
+    123456
+ */
   const onLogin = async () => {
     try {
-      // const passwordHash = await bcrypt.hash(password, 10);
-      const passwordHash = "12345";
-      const data = await handleLogin(email, passwordHash);
+      const data = await handleLogin(email, password);
 
       if (data.accessToken) {
         localStorage.setItem("accessToken", data.accessToken);
@@ -23,7 +29,7 @@ const Login = () => {
         document.cookie = `accessToken=${data.accessToken}; path=/;`;
       }
 
-      if (data.role === "admin") {
+      if (data.role === "Administrator") {
         router.push("/admin");
       } else if (data.role === "staff") {
         alert("Logged in as Staff");

@@ -9,7 +9,6 @@ const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to the pet management page
     router.push("/admin/pet-management");
   }, [router]);
   return null;
