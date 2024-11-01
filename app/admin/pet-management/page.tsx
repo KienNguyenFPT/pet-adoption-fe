@@ -22,6 +22,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import { TablePetColumns } from "./pet-constant";
 import PreviewIcon from "@mui/icons-material/Preview";
+import moment from "moment";
 import {
   Dialog,
   DialogTitle,
@@ -154,32 +155,68 @@ const PetManagement = () => {
                 open={openDialog}
                 onClose={handleCloseDialog}
               >
-                <DialogTitle>VIEW</DialogTitle>
+                <DialogTitle>
+                  <h3>VIEW</h3>
+                </DialogTitle>
                 <DialogContent>
                   {selectedPet && (
                     <div>
                       <p>
-                        <strong>Tên:</strong> {selectedPet.petName}
+                        <strong>Name:</strong> {selectedPet.petName}
                       </p>
                       <p>
-                        <strong>Tuổi:</strong> {selectedPet.age}
+                        <strong>Age:</strong> {selectedPet.age}
                       </p>
                       <p>
-                        <strong>Giống:</strong> {selectedPet.breed}
+                        <strong>Breed:</strong> {selectedPet.breed}
                       </p>
                       <p>
-                        <strong>Giới tính:</strong> {selectedPet.gender}
+                        <strong>Gender:</strong> {selectedPet.gender}
                       </p>
                       <p>
-                        <strong>Mô tả:</strong> {selectedPet.description}
+                        <strong>Description:</strong> {selectedPet.description}
                       </p>
-                      {/* Thêm các thông tin khác nếu cần */}
+                      <p>
+                        <strong>Rescued Date:</strong>{" "}
+                        {selectedPet.rescuedDate
+                          ? moment(new Date(selectedPet.rescuedDate)).format(
+                              "DD/MM/YYYY"
+                            )
+                          : ""}
+                      </p>
+                      <p>
+                        <strong>Shelter:</strong> {selectedPet.shelterName}
+                      </p>
+                      {selectedPet.petImages &&
+                        selectedPet.petImages.length > 0 && (
+                          <div
+                            style={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: "8px",
+                            }}
+                          >
+                            {selectedPet.petImages.map(
+                              (image: any, index: number) => (
+                                <img
+                                  key={index}
+                                  src={image.image}
+                                  style={{
+                                    width: "150px",
+                                    height: "auto",
+                                    borderRadius: "8px",
+                                  }}
+                                />
+                              )
+                            )}
+                          </div>
+                        )}
                     </div>
                   )}
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleCloseDialog} color="primary">
-                    Đóng
+                    Close
                   </Button>
                 </DialogActions>
               </Dialog>
@@ -205,18 +242,13 @@ const PetManagement = () => {
         </Typography>
         <Button
           variant="contained"
-          onClick={() => router.push("/admin/add-pet")}
+          onClick={() => router.push("/admin/pet-management/add-pet")}
         >
           Add New Pet
         </Button>
       </Box>
       <Box>
         <MUIDataTable
-          sx={{
-            "& .MuiBackdrop-root": {
-              boxShadow: "unset",
-            },
-          }}
           title={""}
           data={pets}
           columns={columns}

@@ -1,6 +1,6 @@
-import { Pet, PetResponse } from "../types/pet";
+import { Pet, Response } from "../types/pet";
 
-export const getAllPets = async (): Promise<PetResponse> => {
+export const getAllPets = async (): Promise<Response> => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_GATEWAY}/Pet/GetAllPets`,
     {
@@ -21,8 +21,17 @@ export const addPet = async (pet: Omit<Pet, "id">): Promise<Pet> => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
-      body: JSON.stringify(pet),
+      body: JSON.stringify({
+        petName: pet.petName,
+        age: pet.age,
+        breed: pet.breed,
+        gender: pet.gender,
+        description: pet.description,
+        rescuedDate: pet.rescuedDate,
+        shelterId: pet.shelterId,
+      }),
     }
   );
   if (!response.ok) {

@@ -6,13 +6,13 @@ export interface Pet {
   breed: string;
   gender: string;
   description: string;
-  rescuedDate: string;
+  rescuedDate: string | null;
   shelterId: string;
   shelterName: string;
   petImages: any;
 }
-export interface PetResponse {
-  data: Pet[];
+export interface Response {
+  data: any;
   success: boolean;
   message: string;
   error: boolean;

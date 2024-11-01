@@ -38,8 +38,6 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <AppBar position="static" sx={{ backgroundColor: "cornflowerblue" }}>
-        {" "}
-        {}
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Pet Admin

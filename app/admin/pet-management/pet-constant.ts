@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const TablePetColumns = [
   {
     name: "id",
@@ -53,6 +55,9 @@ export const TablePetColumns = [
     options: {
       filter: true,
       sort: true,
+      customBodyRender: (value: string) => {
+        return moment(value).format("DD/MM/YYYY");
+      },
     },
   },
   {
