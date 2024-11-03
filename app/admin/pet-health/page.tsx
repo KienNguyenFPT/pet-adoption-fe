@@ -14,13 +14,13 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Layout from "../../components/Layout";
-import { deletePet, getAllPets } from "../../services/petService";
+import { deleteHealth, getAllHealth } from "../../services/petHealthService";
 import MUIDataTable from "mui-datatables";
-import { Pet } from "../../types/pet";
+import { Health } from "../../types/health";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
-import { TablePetColumns } from "./pet-constant";
+import { TableHealthColumns } from "./health-constant";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { Alert } from "@mui/material";
 import {
@@ -30,13 +30,13 @@ import {
   DialogActions,
 } from "@mui/material";
 import moment from "moment";
-const PetManagement = () => {
+const HealthManagement = () => {
   const router = useRouter();
-  const [pets, setPets] = useState<Pet[]>([]);
+  const [Healths, setHealths] = useState<Health[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
+  const [selectedHealth, setSelectedHealth] = useState<Health | null>(null);
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error";
@@ -52,53 +52,62 @@ const PetManagement = () => {
     setIsLoading(false);
   }, [router]);
 
-  const fetchPets = async () => {
+  const fetchHealths = async () => {
     try {
-      const res = await getAllPets();
+      const res = await getAllHealth();
 
       if (res && res.success) {
-        setPets(res.data);
+        setHealths(res.data);
       } else {
-        setNotification({ message: "Failed to fetch pets", type: "error" });
+        setNotification({
+          message: "Failed to fetch Healths",
+          type: "error",
+        });
       }
     } catch (error) {
-      console.error("Error fetching pets:", error);
-      setNotification({ message: "Failed to fetch pets.", type: "error" });
+      console.error("Error fetching Healths:", error);
+      setNotification({
+        message: "Failed to fetch Healths.",
+        type: "error",
+      });
     }
   };
 
-  const handleEditPet = (id: string) => {
-    router.push(`/admin/pet-management/edit-pet?id=${id}`);
+  const handleEditHealth = (id: string) => {
+    router.push(`/admin/Health-management/edit-Health?id=${id}`);
   };
 
-  const handleViewPet = (id: string) => {
-    const pet = pets.find((pet) => pet.id === id);
-    if (pet) {
-      setSelectedPet(pet);
+  const handleViewHealth = (id: string) => {
+    const Health = Healths.find((Health) => Health.id === id);
+    if (Health) {
+      setSelectedHealth(Health);
       setOpenDialog(true);
     }
   };
 
-  const handleDeletePet = async (id: string) => {
+  const handleDeleteHealth = async (id: string) => {
     try {
-      await deletePet(id);
-      setPets(pets.filter((pet) => pet.id !== id));
+      await deleteHealth(id);
+      setHealths(Healths.filter((Health) => Health.id !== id));
       setNotification({
-        message: "Pet deleted successfully!",
+        message: "Healthdeleted successfully!",
         type: "success",
       });
     } catch (error) {
-      console.error("Error deleting pet:", error);
-      setNotification({ message: "Failed to delete pet.", type: "error" });
+      console.error("Error deleting Health:", error);
+      setNotification({
+        message: "Failed to delete Health.",
+        type: "error",
+      });
     }
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setSelectedPet(null);
+    setSelectedHealth(null);
   };
   useEffect(() => {
-    fetchPets();
+    fetchHealths();
   }, []);
 
   if (isLoading) {
@@ -119,7 +128,7 @@ const PetManagement = () => {
     return null;
   }
   const columns = [
-    ...TablePetColumns,
+    ...TableHealthColumns,
     {
       name: "actions",
       label: "Actions",
@@ -132,19 +141,19 @@ const PetManagement = () => {
               <div style={{ display: "flex", gap: "8px" }}>
                 {" "}
                 <IconButton
-                  onClick={() => handleViewPet(tableMeta.rowData[0])}
+                  onClick={() => handleViewHealth(tableMeta.rowData[0])}
                   color="primary"
                 >
                   <PreviewIcon />
                 </IconButton>
                 <IconButton
-                  onClick={() => handleEditPet(tableMeta.rowData[0])}
+                  onClick={() => handleEditHealth(tableMeta.rowData[0])}
                   color="primary"
                 >
                   <EditIcon />
                 </IconButton>
                 <IconButton
-                  onClick={() => handleDeletePet(tableMeta.rowData[0])}
+                  onClick={() => handleDeleteHealth(tableMeta.rowData[0])}
                   color="secondary"
                 >
                   <DeleteIcon />
@@ -166,59 +175,35 @@ const PetManagement = () => {
                   <b>VIEW</b>
                 </DialogTitle>
                 <DialogContent>
-                  {selectedPet && (
+                  {selectedHealth && (
                     <div>
                       <p>
-                        <strong>Name:</strong> {selectedPet.petName}
+                        <strong>Name:</strong> {selectedHealth.healthName}
                       </p>
                       <p>
-                        <strong>Age:</strong> {selectedPet.age}
+                        <strong>Age:</strong> {selectedHealth.age}
                       </p>
                       <p>
-                        <strong>Breed:</strong> {selectedPet.breed}
+                        <strong>Breed:</strong> {selectedHealth.breed}
                       </p>
                       <p>
-                        <strong>Gender:</strong> {selectedPet.gender}
+                        <strong>Gender:</strong> {selectedHealth.gender}
                       </p>
                       <p>
-                        <strong>Description:</strong> {selectedPet.description}
+                        <strong>Description:</strong>{" "}
+                        {selectedHealth.description}
                       </p>
                       <p>
                         <strong>Rescued Date:</strong>{" "}
-                        {selectedPet.rescuedDate
-                          ? moment(new Date(selectedPet.rescuedDate)).format(
+                        {selectedHealth.rescuedDate
+                          ? moment(new Date(selectedHealth.rescuedDate)).format(
                               "DD/MM/YYYY"
                             )
                           : ""}
                       </p>
                       <p>
-                        <strong>Shelter:</strong> {selectedPet.shelterName}
+                        <strong>Shelter:</strong> {selectedHealth.shelterName}
                       </p>
-                      {selectedPet.petImages &&
-                        selectedPet.petImages.length > 0 && (
-                          <div
-                            style={{
-                              display: "flex",
-                              flexWrap: "wrap",
-                              gap: "8px",
-                              marginTop: "10px",
-                            }}
-                          >
-                            {selectedPet.petImages.map(
-                              (image: any, index: number) => (
-                                <img
-                                  key={index}
-                                  src={image.image}
-                                  style={{
-                                    width: "150px",
-                                    height: "auto",
-                                    borderRadius: "8px",
-                                  }}
-                                />
-                              )
-                            )}
-                          </div>
-                        )}
                     </div>
                   )}
                 </DialogContent>
@@ -246,14 +231,14 @@ const PetManagement = () => {
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-          Pet Management
+          HealthManagement
         </Typography>
         <Button
           sx={{ mr: 2 }}
           variant="contained"
-          onClick={() => router.push("/admin/pet-management/add-pet")}
+          onClick={() => router.push("/admin/Health-management/add-Health")}
         >
-          Add New Pet
+          Add New Health
         </Button>
       </Box>
       <div>
@@ -269,7 +254,7 @@ const PetManagement = () => {
       <Box>
         <MUIDataTable
           title={""}
-          data={pets}
+          data={Healths}
           columns={columns}
           options={{
             download: false,
@@ -290,4 +275,4 @@ const PetManagement = () => {
   );
 };
 
-export default PetManagement;
+export default HealthManagement;

@@ -15,14 +15,17 @@
     "@mui/material": "^6.1.6",
     "@mui/x-date-pickers": "^6.20.2",
     "date-fns": "^3.6.0",
+    "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2",
     "moment": "^2.30.1",
-    "next": "^13.0.0",
+    "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
-    "react-router-dom": "^6.27.0"
+    "react-router-dom": "^6.27.0",
+    "uuid": "^11.0.2"
   },
   "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/mui-datatables": "^4.3.12",
     "@types/node": "^20",
     "@types/react": "^18",

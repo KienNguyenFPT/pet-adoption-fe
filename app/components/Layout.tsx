@@ -75,7 +75,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ListItem
               className={styles.listItemButton}
               component="button"
-              onClick={() => router.push("/admin/")}
+              onClick={() => router.push("/admin/pet-management")}
             >
               <ListItemIcon>
                 <img src="/icons/pet.svg" alt="Home" width={24} height={24} />
@@ -100,7 +100,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ListItem
               className={styles.listItemButton}
               component="button"
-              onClick={() => router.push("/admin/pet-heath")}
+              onClick={() => router.push("/admin/pet-health")}
             >
               <ListItemIcon>
                 <img

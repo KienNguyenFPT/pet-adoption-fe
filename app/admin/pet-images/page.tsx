@@ -1,57 +1,176 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
-  Typography,
   Button,
-  Grid,
-  Card,
-  CardMedia,
-  CardContent,
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TablePagination,
 } from "@mui/material";
+import { useRouter } from "next/navigation";
 import Layout from "../../components/Layout";
-
+import { getAllImages, deleteImage } from "../../services/imageService";
+import { Image } from "../../types/images";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { IconButton } from "@mui/material";
+import { Alert } from "@mui/material";
 const PetImages = () => {
-  const [images, setImages] = useState<string[]>([
-    "/images/pet1.jpg",
-    "/images/pet2.jpg",
-    "/images/pet3.jpg",
-  ]);
+  const router = useRouter();
+  const [images, setimages] = useState<Image[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
-  const handleAddImage = () => {
-    const newImage = `/images/pet${images.length + 1}.jpg`;
-    setImages([...images, newImage]);
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      router.push("/admin/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+    setIsLoading(false);
+  }, [router]);
+
+  const fetchimages = async () => {
+    try {
+      const res = await getAllImages();
+
+      if (res && res.success) {
+        setimages(res.data);
+      } else {
+        setNotification({ message: "Failed to fetch images", type: "error" });
+      }
+    } catch (error) {
+      console.error("Error fetching images:", error);
+      setNotification({ message: "Failed to fetch images.", type: "error" });
+    }
+  };
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
   };
 
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+  const handleDeleteImage = async (id: string) => {
+    try {
+      await deleteImage(id);
+      setimages(images.filter((Image) => Image.id !== id));
+      setNotification({
+        message: "Image deleted successfully!",
+        type: "success",
+      });
+    } catch (error) {
+      console.error("Error deleting Image:", error);
+      setNotification({ message: "Failed to delete Image.", type: "error" });
+    }
+  };
+  useEffect(() => {
+    fetchimages();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
+  if (!isAuthenticated) {
+    return null;
+  }
   return (
     <Layout>
-      <Box sx={{ p: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          Pet Image Management
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 2,
+        }}
+      >
+        <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
+          Pet Images
         </Typography>
-        <Button variant="contained" color="primary" onClick={handleAddImage}>
-          Add New Image
-        </Button>
-        <Grid container spacing={2} sx={{ mt: 2 }}>
-          {images.map((image, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <Card>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image={image}
-                  alt={`Pet ${index + 1}`}
-                />
-                <CardContent>
-                  <Typography variant="body2" color="text.secondary">
-                    Pet Image {index + 1}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+      </Box>
+      <div>
+        {notification && (
+          <Alert
+            severity={notification.type}
+            onClose={() => setNotification(null)}
+          >
+            {notification.message}
+          </Alert>
+        )}
+      </div>
+      <Box>
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell>Image</TableCell>
+                <TableCell>Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {images
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((img) => (
+                  <TableRow key={img.id}>
+                    <TableCell>{img.id}</TableCell>
+                    <TableCell>
+                      <img
+                        src={img.image || undefined}
+                        alt="Pet"
+                        style={{ width: "200px", height: "auto" }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <IconButton onClick={() => handleDeleteImage(img.id)}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={images.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </TableContainer>
       </Box>
     </Layout>
   );

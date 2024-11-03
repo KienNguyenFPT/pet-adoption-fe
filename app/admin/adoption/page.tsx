@@ -14,13 +14,16 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Layout from "../../components/Layout";
-import { deletePet, getAllPets } from "../../services/petService";
+import {
+  deleteAdoption,
+  getAllAdoptions,
+} from "../../services/adoptionService";
 import MUIDataTable from "mui-datatables";
-import { Pet } from "../../types/pet";
+import { Adoption } from "../../types/adoption";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
-import { TablePetColumns } from "./pet-constant";
+import { TableAdoptionColumns } from "./adoption-constant";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { Alert } from "@mui/material";
 import {
@@ -30,13 +33,15 @@ import {
   DialogActions,
 } from "@mui/material";
 import moment from "moment";
-const PetManagement = () => {
+const AdoptionManagement = () => {
   const router = useRouter();
-  const [pets, setPets] = useState<Pet[]>([]);
+  const [Adoptions, setAdoptions] = useState<Adoption[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
-  const [selectedPet, setSelectedPet] = useState<Pet | null>(null);
+  const [selectedAdoption, setSelectedAdoption] = useState<Adoption | null>(
+    null
+  );
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error";
@@ -52,53 +57,57 @@ const PetManagement = () => {
     setIsLoading(false);
   }, [router]);
 
-  const fetchPets = async () => {
+  const fetchAdoptions = async () => {
     try {
-      const res = await getAllPets();
+      const res = await getAllAdoptions();
+      console.log(res);
 
       if (res && res.success) {
-        setPets(res.data);
+        setAdoptions(res.data);
       } else {
-        setNotification({ message: "Failed to fetch pets", type: "error" });
+        setNotification({
+          message: "Failed to fetch Adoptions",
+          type: "error",
+        });
       }
     } catch (error) {
-      console.error("Error fetching pets:", error);
-      setNotification({ message: "Failed to fetch pets.", type: "error" });
+      console.error("Error fetching Adoptions:", error);
+      setNotification({ message: "Failed to fetch Adoptions.", type: "error" });
     }
   };
 
-  const handleEditPet = (id: string) => {
-    router.push(`/admin/pet-management/edit-pet?id=${id}`);
+  const handleEditAdoption = (id: string) => {
+    router.push(`/admin/Adoption-management/edit-Adoption?id=${id}`);
   };
 
-  const handleViewPet = (id: string) => {
-    const pet = pets.find((pet) => pet.id === id);
-    if (pet) {
-      setSelectedPet(pet);
+  const handleViewAdoption = (id: string) => {
+    const Adoption = Adoptions.find((Adoption) => Adoption.id === id);
+    if (Adoption) {
+      setSelectedAdoption(Adoption);
       setOpenDialog(true);
     }
   };
 
-  const handleDeletePet = async (id: string) => {
+  const handleDeleteAdoption = async (id: string) => {
     try {
-      await deletePet(id);
-      setPets(pets.filter((pet) => pet.id !== id));
+      await deleteAdoption(id);
+      setAdoptions(Adoptions.filter((Adoption) => Adoption.id !== id));
       setNotification({
-        message: "Pet deleted successfully!",
+        message: "Adoption deleted successfully!",
         type: "success",
       });
     } catch (error) {
-      console.error("Error deleting pet:", error);
-      setNotification({ message: "Failed to delete pet.", type: "error" });
+      console.error("Error deleting Adoption:", error);
+      setNotification({ message: "Failed to delete Adoption.", type: "error" });
     }
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setSelectedPet(null);
+    setSelectedAdoption(null);
   };
   useEffect(() => {
-    fetchPets();
+    fetchAdoptions();
   }, []);
 
   if (isLoading) {
@@ -119,7 +128,7 @@ const PetManagement = () => {
     return null;
   }
   const columns = [
-    ...TablePetColumns,
+    ...TableAdoptionColumns,
     {
       name: "actions",
       label: "Actions",
@@ -132,19 +141,19 @@ const PetManagement = () => {
               <div style={{ display: "flex", gap: "8px" }}>
                 {" "}
                 <IconButton
-                  onClick={() => handleViewPet(tableMeta.rowData[0])}
+                  onClick={() => handleViewAdoption(tableMeta.rowData[0])}
                   color="primary"
                 >
                   <PreviewIcon />
                 </IconButton>
                 <IconButton
-                  onClick={() => handleEditPet(tableMeta.rowData[0])}
+                  onClick={() => handleEditAdoption(tableMeta.rowData[0])}
                   color="primary"
                 >
                   <EditIcon />
                 </IconButton>
                 <IconButton
-                  onClick={() => handleDeletePet(tableMeta.rowData[0])}
+                  onClick={() => handleDeleteAdoption(tableMeta.rowData[0])}
                   color="secondary"
                 >
                   <DeleteIcon />
@@ -166,36 +175,37 @@ const PetManagement = () => {
                   <b>VIEW</b>
                 </DialogTitle>
                 <DialogContent>
-                  {selectedPet && (
+                  {selectedAdoption && (
                     <div>
                       <p>
-                        <strong>Name:</strong> {selectedPet.petName}
+                        <strong>Name:</strong> {selectedAdoption.AdoptionName}
                       </p>
                       <p>
-                        <strong>Age:</strong> {selectedPet.age}
+                        <strong>Age:</strong> {selectedAdoption.age}
                       </p>
                       <p>
-                        <strong>Breed:</strong> {selectedPet.breed}
+                        <strong>Breed:</strong> {selectedAdoption.breed}
                       </p>
                       <p>
-                        <strong>Gender:</strong> {selectedPet.gender}
+                        <strong>Gender:</strong> {selectedAdoption.gender}
                       </p>
                       <p>
-                        <strong>Description:</strong> {selectedPet.description}
+                        <strong>Description:</strong>{" "}
+                        {selectedAdoption.description}
                       </p>
                       <p>
                         <strong>Rescued Date:</strong>{" "}
-                        {selectedPet.rescuedDate
-                          ? moment(new Date(selectedPet.rescuedDate)).format(
-                              "DD/MM/YYYY"
-                            )
+                        {selectedAdoption.rescuedDate
+                          ? moment(
+                              new Date(selectedAdoption.rescuedDate)
+                            ).format("DD/MM/YYYY")
                           : ""}
                       </p>
                       <p>
-                        <strong>Shelter:</strong> {selectedPet.shelterName}
+                        <strong>Shelter:</strong> {selectedAdoption.shelterName}
                       </p>
-                      {selectedPet.petImages &&
-                        selectedPet.petImages.length > 0 && (
+                      {selectedAdoption.AdoptionImages &&
+                        selectedAdoption.AdoptionImages.length > 0 && (
                           <div
                             style={{
                               display: "flex",
@@ -204,7 +214,7 @@ const PetManagement = () => {
                               marginTop: "10px",
                             }}
                           >
-                            {selectedPet.petImages.map(
+                            {selectedAdoption.AdoptionImages.map(
                               (image: any, index: number) => (
                                 <img
                                   key={index}
@@ -246,14 +256,14 @@ const PetManagement = () => {
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-          Pet Management
+          Adoption Management
         </Typography>
         <Button
           sx={{ mr: 2 }}
           variant="contained"
-          onClick={() => router.push("/admin/pet-management/add-pet")}
+          onClick={() => router.push("/admin/Adoption-management/add-Adoption")}
         >
-          Add New Pet
+          Add New Adoption
         </Button>
       </Box>
       <div>
@@ -269,7 +279,7 @@ const PetManagement = () => {
       <Box>
         <MUIDataTable
           title={""}
-          data={pets}
+          data={Adoptions}
           columns={columns}
           options={{
             download: false,
@@ -290,4 +300,4 @@ const PetManagement = () => {
   );
 };
 
-export default PetManagement;
+export default AdoptionManagement;

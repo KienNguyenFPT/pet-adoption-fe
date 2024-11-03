@@ -9,5 +9,7 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|admin/login|images).*)"],
+  matcher: [
+    "/((?!api|_next/static|_next/image|admin/login|images|admin/register).*)",
+  ],
 };

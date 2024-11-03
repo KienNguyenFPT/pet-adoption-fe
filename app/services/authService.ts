@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 export async function handleLogin(emailAddress: string, passwordHash: string) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_GATEWAY}/Authentication/LoginWithEmailAndPasswordJWT`,
+      `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Authentication/LoginWithEmailAndPasswordJWT`,
       {
         method: "POST",
         headers: {
@@ -14,13 +14,14 @@ export async function handleLogin(emailAddress: string, passwordHash: string) {
         body: JSON.stringify({ emailAddress, passwordHash }),
       }
     );
-
-    if (!response.ok) {
-      throw new Error("Login failed");
-    }
+    // if (!response.ok) {
+    //   throw new Error("Login failed");
+    // }
     const data = await response.json();
     if (data.success) {
       const decodedToken = jwt.decode(data.token);
+      if (!decodedToken) throw new Error("Invalid credentials.");
+
       const d = {
         username: decodedToken.Email,
         role: decodedToken[
@@ -29,9 +30,56 @@ export async function handleLogin(emailAddress: string, passwordHash: string) {
         accessToken: data.token,
       };
       return d;
+    } else {
+      return data;
     }
-    throw new Error("Invalid credentials.");
   } catch (error: any) {
     throw new Error("Invalid credentials");
+  }
+}
+
+export async function handleRegister(
+  isAdmin: boolean = false,
+  isStaff: boolean = false,
+  emailAddress: string,
+  passwordHash: string,
+  fullName: string,
+  phoneNumber: string
+) {
+  try {
+    const path = isAdmin
+      ? "/api/Authentication/RegisterAdminAccount"
+      : isStaff
+      ? "/api/Authentication/RegisterStaffAccount"
+      : "/api/Authentication/RegisterAnAccount";
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_API_GATEWAY}${path}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emailAddress,
+          passwordHash,
+          fullName,
+          phoneNumber,
+        }),
+      }
+    );
+    console.log(response);
+
+    // if (!response.ok) {
+    //   throw new Error("Register failed.");
+    // }
+    const data = await response.text();
+    console.log({ data });
+
+    if (data == "Registered Successfully") return data;
+    throw new Error("Register failed! Please try again.");
+  } catch (error: any) {
+    console.log(error.message);
+
+    throw new Error("Register failed. Please try again.");
   }
 }

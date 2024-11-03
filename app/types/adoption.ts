@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export interface Pet {
+export interface Adoption {
   id: string;
-  petName: string;
+  adoptionName: string;
   age: string;
   breed: string;
   gender: string;
@@ -9,12 +9,5 @@ export interface Pet {
   rescuedDate: string | null;
   shelterId: string;
   shelterName: string;
-  petImages: any | null;
-}
-export interface Response {
-  data: any;
-  success: boolean;
-  message: string;
-  error: boolean;
-  errorMessages: string;
+  adoptionImages: any | null;
 }

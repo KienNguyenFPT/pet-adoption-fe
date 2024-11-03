@@ -22,6 +22,7 @@ const Login = () => {
   const onLogin = async () => {
     try {
       const data = await handleLogin(email, password);
+      console.log(data);
 
       if (data.accessToken) {
         localStorage.setItem("accessToken", data.accessToken);
@@ -31,11 +32,12 @@ const Login = () => {
 
       if (data.role === "Administrator") {
         router.push("/admin");
-      } else if (data.role === "staff") {
-        alert("Logged in as Staff");
+      } else if (data.role === "Staff") {
+        // alert("Logged in as Staff");
         router.push("/admin");
       } else {
-        alert("Unknown role");
+        // alert("Unknown role");
+        setError("Unknown role");
       }
     } catch (error: any) {
       setError(error.message);
@@ -73,10 +75,10 @@ const Login = () => {
             id="email"
             label="Email address"
             name="email"
-            autoComplete="emailAddress"
             autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            autoComplete="new_input_64"
           />
           <TextField
             margin="normal"
@@ -86,9 +88,9 @@ const Login = () => {
             label="Password"
             type="password"
             id="password"
-            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            autoComplete="none"
           />
           {error && <Typography color="error">{error}</Typography>}
           <Button
@@ -99,6 +101,12 @@ const Login = () => {
           >
             Sign In
           </Button>
+          <p>
+            You do not have an account?&nbsp;
+            <a href="/admin/register" style={{ color: "#1976d2" }}>
+              Register here
+            </a>
+          </p>
         </Box>
       </Container>
     </Box>
