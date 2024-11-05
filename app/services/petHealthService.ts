@@ -3,7 +3,7 @@ import { Health } from "../types/health";
 
 export const getAllHealth = async (): Promise<Response> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Health`,
+    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Health/GetAllHealths`,
     {
       method: "GET",
       headers: {
