@@ -172,31 +172,23 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </ListItemIcon>
               <ListItemText primary="Event" />
             </ListItem>
-            <ListItem
-              className={styles.listItemButton}
-              component="button"
-              onClick={() => router.push("/admin/event-images")}
-            >
-              <ListItemIcon>
-                <img
-                  src="/icons/event-image.svg"
-                  alt="Event Images"
-                  width={24}
-                  height={24}
-                />
-              </ListItemIcon>
-              <ListItemText primary="Event Images" />
-            </ListItem>
-            <ListItem
-              className={styles.listItemButton}
-              component="button"
-              onClick={() => router.push("/admin/users")}
-            >
-              <ListItemIcon>
-                <img src="/icons/user.svg" alt="User" width={24} height={24} />
-              </ListItemIcon>
-              <ListItemText primary="Users" />
-            </ListItem>
+            {localStorage.getItem("role") == "Administrator" && (
+              <ListItem
+                className={styles.listItemButton}
+                component="button"
+                onClick={() => router.push("/admin/user-management")}
+              >
+                <ListItemIcon>
+                  <img
+                    src="/icons/user.svg"
+                    alt="User Management"
+                    width={24}
+                    height={24}
+                  />
+                </ListItemIcon>
+                <ListItemText primary="Users" />
+              </ListItem>
+            )}
             {/* <ListItem className={styles.listItemButton} component="button" onClick={() => router.push('/settings')}>
               <ListItemIcon>
                 <img src="/icons/settings.svg" alt="Settings" width={24} height={24} />

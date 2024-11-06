@@ -46,29 +46,6 @@ export const addAdoption = async (
   return response.json();
 };
 
-export const addImage = async (
-  adoptionId: string,
-  file: File
-): Promise<Response> => {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/AdoptionImages/AddAdoptionPhotos/AddPhoto/${adoptionId}`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      },
-      body: formData,
-    }
-  );
-
-  if (!response.ok) {
-    throw new Error("Failed to add adoption image");
-  }
-  return response.json();
-};
 export const getAdoptionById = async (id: string): Promise<Response> => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Adoption/GetAdoption/${id}`,
