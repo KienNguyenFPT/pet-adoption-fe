@@ -2,11 +2,11 @@ import { Pet, Response } from "../types/pet";
 
 export const getAllPets = async (): Promise<Response> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Pet/GetAllPets`,
+    `${process.env.NEXT_PUBLIC_API_GATEWAY1}/api/Pet/GetAllPets`,
     {
       method: "GET",
       headers: {},
-    }
+    }  
   );
   if (!response.ok) {
     throw new Error("Failed to fetch pets");
