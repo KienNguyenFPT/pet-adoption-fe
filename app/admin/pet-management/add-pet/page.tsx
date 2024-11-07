@@ -14,12 +14,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Layout from "../../../components/Layout";
-import { addPet } from "../../../services/petService";
-import { Pet } from "../../../types/pet";
+import Layout from "@/app/components/Layout";
+import { addPet } from "@/app/services/petService";
+import { Pet } from "@/app/types/pet";
 import { getAllShelters } from "@/app/services/shelterService";
 import { Shelter } from "@/app/types/shelter";
 import { Alert } from "@mui/material";
+import moment from "moment";
 
 const AddPet = () => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const AddPet = () => {
     breed: "",
     gender: "",
     description: "",
-    rescuedDate: "",
+    rescuedDate: moment(new Date()).format("YYYY-MM-DD"),
     shelterId: "",
     shelterName: "",
     petImages: [],

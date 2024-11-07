@@ -72,11 +72,11 @@ export const deleteShelter = async (id: string): Promise<void> => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     }
   );
   if (!response.ok) {
     throw new Error("Failed to delete shelter");
   }
-  return response.json();
 };

@@ -17,6 +17,7 @@ import Layout from "../../components/Layout";
 import {
   deleteAdoption,
   getAllAdoptions,
+  getAdoptionByPetId,
 } from "../../services/adoptionService";
 import MUIDataTable from "mui-datatables";
 import { Adoption } from "../../types/adoption";
@@ -32,7 +33,9 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { useSearchParams } from "next/navigation";
 import moment from "moment";
+
 const AdoptionManagement = () => {
   const router = useRouter();
   const [Adoptions, setAdoptions] = useState<Adoption[]>([]);
@@ -57,27 +60,70 @@ const AdoptionManagement = () => {
     setIsLoading(false);
   }, [router]);
 
-  const fetchAdoptions = async () => {
-    try {
-      const res = await getAllAdoptions();
-      console.log(res);
+  const searchParams = useSearchParams();
+  const petId = searchParams.get("petId");
 
-      if (res && res.success) {
-        setAdoptions(res.data);
-      } else {
+  useEffect(() => {
+    if (petId) {
+      try {
+        getAdoptionByPetId(petId).then((response) => {
+          console.log(response);
+          if (!response || !response.success) {
+            setNotification({
+              message: "Failed to get adoption.",
+              type: "error",
+            });
+          } else if (
+            response.data.id === "00000000-0000-0000-0000-000000000000"
+          ) {
+            setNotification({
+              message: "Adoption not found.",
+              type: "error",
+            });
+          } else {
+            setAdoptions({
+              ...response.data,
+              applicationDate: moment(
+                new Date(response.data?.applicationDate)
+              ).format("YYYY-MM-DD"),
+              approvalDate: moment(
+                new Date(response.data?.approvalDate)
+              ).format("YYYY-MM-DD"),
+            });
+          }
+        });
+      } catch (error) {
         setNotification({
-          message: "Failed to fetch Adoptions",
+          message: "Failed to fetch adoption",
           type: "error",
         });
       }
-    } catch (error) {
-      console.error("Error fetching Adoptions:", error);
-      setNotification({ message: "Failed to fetch Adoptions.", type: "error" });
+    } else {
+      const fetchAdoptions = async () => {
+        try {
+          const res = await getAllAdoptions();
+          if (res && res.success) {
+            setAdoptions(res.data);
+          } else {
+            setNotification({
+              message: "Failed to fetch adoptions",
+              type: "error",
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching adoptions:", error);
+          setNotification({
+            message: "Failed to fetch adoptions.",
+            type: "error",
+          });
+        }
+      };
+      fetchAdoptions();
     }
-  };
+  }, [petId]);
 
   const handleEditAdoption = (id: string) => {
-    router.push(`/admin/Adoption-management/edit-Adoption?id=${id}`);
+    router.push(`/admin/adoption/edit-adoption?id=${id}`);
   };
 
   const handleViewAdoption = (id: string) => {
@@ -91,14 +137,14 @@ const AdoptionManagement = () => {
   const handleDeleteAdoption = async (id: string) => {
     try {
       await deleteAdoption(id);
-      setAdoptions(Adoptions.filter((Adoption) => Adoption.id !== id));
+      setAdoptions(Adoptions.filter((a) => a.id !== id));
       setNotification({
         message: "Adoption deleted successfully!",
         type: "success",
       });
     } catch (error) {
-      console.error("Error deleting Adoption:", error);
-      setNotification({ message: "Failed to delete Adoption.", type: "error" });
+      console.error("Error deleting adoption:", error);
+      setNotification({ message: "Failed to delete adoption.", type: "error" });
     }
   };
 
@@ -106,9 +152,6 @@ const AdoptionManagement = () => {
     setOpenDialog(false);
     setSelectedAdoption(null);
   };
-  useEffect(() => {
-    fetchAdoptions();
-  }, []);
 
   if (isLoading) {
     return (
@@ -177,35 +220,58 @@ const AdoptionManagement = () => {
                 <DialogContent>
                   {selectedAdoption && (
                     <div>
-                      <p>
-                        <strong>Name:</strong> {selectedAdoption.AdoptionName}
-                      </p>
-                      <p>
-                        <strong>Age:</strong> {selectedAdoption.age}
-                      </p>
-                      <p>
-                        <strong>Breed:</strong> {selectedAdoption.breed}
-                      </p>
-                      <p>
-                        <strong>Gender:</strong> {selectedAdoption.gender}
-                      </p>
-                      <p>
-                        <strong>Description:</strong>{" "}
-                        {selectedAdoption.description}
-                      </p>
-                      <p>
-                        <strong>Rescued Date:</strong>{" "}
-                        {selectedAdoption.rescuedDate
-                          ? moment(
-                              new Date(selectedAdoption.rescuedDate)
-                            ).format("DD/MM/YYYY")
-                          : ""}
-                      </p>
-                      <p>
-                        <strong>Shelter:</strong> {selectedAdoption.shelterName}
-                      </p>
-                      {selectedAdoption.AdoptionImages &&
-                        selectedAdoption.AdoptionImages.length > 0 && (
+                      {[
+                        {
+                          label: "User Email",
+                          value: selectedAdoption.userEmail,
+                        },
+                        { label: "User Id", value: selectedAdoption.userId },
+                        {
+                          label: "Adoption Reason",
+                          value: selectedAdoption.adoptionReason,
+                        },
+                        {
+                          label: "Pet Experience",
+                          value: selectedAdoption.petExperience,
+                        },
+                        { label: "Address", value: selectedAdoption.address },
+                        {
+                          label: "Contact Number",
+                          value: selectedAdoption.contactNumber,
+                        },
+                        { label: "Notes", value: selectedAdoption.notes },
+                        {
+                          label: "Approval Date",
+                          value: selectedAdoption.approvalDate
+                            ? moment(
+                                new Date(selectedAdoption.approvalDate)
+                              ).format("DD/MM/YYYY")
+                            : "",
+                        },
+                        {
+                          label: "Application Date",
+                          value: selectedAdoption.applicationDate
+                            ? moment(
+                                new Date(selectedAdoption.applicationDate)
+                              ).format("DD/MM/YYYY")
+                            : "",
+                        },
+                        { label: "Pet Id", value: selectedAdoption.petId },
+                        { label: "Pet Name", value: selectedAdoption.petName },
+                      ].map((item, index) => (
+                        <p
+                          key={index}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <strong>{item.label}:</strong>{" "}
+                          <span>{item.value}</span>
+                        </p>
+                      ))}
+                      {selectedAdoption.petImages &&
+                        selectedAdoption.petImages.length > 0 && (
                           <div
                             style={{
                               display: "flex",
@@ -214,7 +280,7 @@ const AdoptionManagement = () => {
                               marginTop: "10px",
                             }}
                           >
-                            {selectedAdoption.AdoptionImages.map(
+                            {selectedAdoption.petImages.map(
                               (image: any, index: number) => (
                                 <img
                                   key={index}
@@ -261,7 +327,7 @@ const AdoptionManagement = () => {
         <Button
           sx={{ mr: 2 }}
           variant="contained"
-          onClick={() => router.push("/admin/Adoption-management/add-Adoption")}
+          onClick={() => router.push("/admin/adoption/add-adoption")}
         >
           Add New Adoption
         </Button>
@@ -276,7 +342,7 @@ const AdoptionManagement = () => {
           </Alert>
         )}
       </div>
-      <Box>
+      <Box sx={{ mt: 2 }}>
         <MUIDataTable
           title={""}
           data={Adoptions}

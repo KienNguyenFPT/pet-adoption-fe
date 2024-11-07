@@ -30,6 +30,8 @@ import {
   DialogActions,
 } from "@mui/material";
 import moment from "moment";
+import Tooltip from "@mui/material/Tooltip";
+
 const PetManagement = () => {
   const router = useRouter();
   const [pets, setPets] = useState<Pet[]>([]);
@@ -70,7 +72,9 @@ const PetManagement = () => {
   const handleEditPet = (id: string) => {
     router.push(`/admin/pet-management/edit-pet?id=${id}`);
   };
-
+  const handleViewAdoption = (id: string) => {
+    router.push(`/admin/adoption?petId=${id}`);
+  };
   const handleViewPet = (id: string) => {
     const pet = pets.find((pet) => pet.id === id);
     if (pet) {
@@ -131,24 +135,38 @@ const PetManagement = () => {
             <>
               <div style={{ display: "flex", gap: "8px" }}>
                 {" "}
-                <IconButton
-                  onClick={() => handleViewPet(tableMeta.rowData[0])}
-                  color="primary"
-                >
-                  <PreviewIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => handleEditPet(tableMeta.rowData[0])}
-                  color="primary"
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => handleDeletePet(tableMeta.rowData[0])}
-                  color="secondary"
-                >
-                  <DeleteIcon />
-                </IconButton>
+                <Tooltip title="View">
+                  <IconButton
+                    onClick={() => handleViewPet(tableMeta.rowData[0])}
+                    color="primary"
+                  >
+                    <PreviewIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="View Adoption">
+                  <IconButton
+                    onClick={() => handleViewAdoption(tableMeta.rowData[0])}
+                    color="primary"
+                  >
+                    <PreviewIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Edit">
+                  <IconButton
+                    onClick={() => handleEditPet(tableMeta.rowData[0])}
+                    color="primary"
+                  >
+                    <EditIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Delete">
+                  <IconButton
+                    onClick={() => handleDeletePet(tableMeta.rowData[0])}
+                    color="secondary"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
               </div>
               <Dialog
                 PaperProps={{

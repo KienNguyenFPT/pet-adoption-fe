@@ -6,7 +6,10 @@ export const getAllUsers = async (): Promise<Response> => {
     `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/User/GetAllUsers/userList`,
     {
       method: "GET",
-      headers: {},
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     }
   );
   if (!response.ok) {
@@ -15,38 +18,15 @@ export const getAllUsers = async (): Promise<Response> => {
   return response.json();
 };
 
-export const addUser = async (user: Omit<User, "id">): Promise<User> => {
+export const getUserById = async (id: string): Promise<Response> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/User/AddUser`,
+    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/User/GetUserById/user/${id}`,
     {
-      method: "POST",
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
-      body: JSON.stringify({
-        userName: user.userName,
-        age: user.age,
-        breed: user.breed,
-        gender: user.gender,
-        description: user.description,
-        rescuedDate: user.rescuedDate,
-        shelterId: user.shelterId,
-      }),
-    }
-  );
-  if (!response.ok) {
-    throw new Error("Failed to add user");
-  }
-  return response.json();
-};
-
-export const getUserById = async (id: string): Promise<Response> => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/User/GetUser/${id}`,
-    {
-      method: "GET",
-      headers: {},
     }
   );
   if (!response.ok) {
@@ -58,22 +38,14 @@ export const getUserById = async (id: string): Promise<Response> => {
 export const updateUser = async (user: User): Promise<User> => {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/User/UpdateUser/${user.id}`,
+      `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/User/UpdateUserById/updateUser/${user.id}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
         },
-        body: JSON.stringify({
-          userName: user.userName,
-          age: user.age,
-          breed: user.breed,
-          gender: user.gender,
-          description: user.description,
-          rescuedDate: user.rescuedDate,
-          shelterId: user.shelterId,
-        }),
+        body: JSON.stringify(user),
       }
     );
     console.log(response);
@@ -91,16 +63,16 @@ export const updateUser = async (user: User): Promise<User> => {
 };
 export const deleteUser = async (id: string): Promise<void> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/User/DeleteUser/${id}`,
+    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/User/DeleteUserById/deleteUser/${id}`,
     {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     }
   );
   if (!response.ok) {
     throw new Error("Failed to delete user");
   }
-  return response.json();
 };

@@ -15,15 +15,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Layout from "../../../components/Layout";
+import Layout from "@/app/components/Layout";
 import {
   updateEvent,
   getEventById,
   addEventImage,
-} from "../../../services/eventService";
-import { Event } from "../../../types/event";
+} from "@/app/services/eventService";
+import { Event } from "@/app/types/event";
 import { useSearchParams } from "next/navigation";
 import { Alert } from "@mui/material";
+import moment from "moment";
 
 const EditEvent = () => {
   const router = useRouter();
@@ -51,7 +52,11 @@ const EditEvent = () => {
     if (id) {
       getEventById(id).then((response) => {
         setEvent(response.data);
-        setNewEvent(response.data);
+        setNewEvent({
+          ...response.data,
+          startDate: moment(response.data.startDate).format("YYYY-MM-DD"),
+          endDate: moment(response.data.endDate).format("YYYY-MM-DD"),
+        });
       });
     }
   }, [id]);
@@ -85,8 +90,19 @@ const EditEvent = () => {
   const handleUpdateEvent = async () => {
     if (event) {
       try {
-        await updateEvent({ ...event, ...newEvent });
-        router.push("/admin/event-management");
+        if (
+          newEvent.startDate &&
+          newEvent.endDate &&
+          moment(newEvent.startDate).isAfter(moment(newEvent.endDate))
+        ) {
+          setNotification({
+            message: "End date must be after start date",
+            type: "error",
+          });
+        } else {
+          await updateEvent({ ...event, ...newEvent });
+          router.push("/admin/event-management");
+        }
       } catch (error) {
         setNotification({
           message: "Failed to updating event.",
@@ -181,6 +197,7 @@ const EditEvent = () => {
                 setNewEvent({ ...newEvent, startDate: e.target.value })
               }
               fullWidth
+              placeholder="YYYY-MM-DD"
             />
           </Grid>
           <Grid item xs={4}>
@@ -191,6 +208,7 @@ const EditEvent = () => {
                 setNewEvent({ ...newEvent, endDate: e.target.value })
               }
               fullWidth
+              placeholder="YYYY-MM-DD"
             />
           </Grid>
           <Grid item xs={4}>

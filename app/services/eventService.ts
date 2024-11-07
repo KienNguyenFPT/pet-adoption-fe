@@ -19,7 +19,7 @@ export const addEvent = async (
   event: Omit<Event, "images">
 ): Promise<Event> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Event/AddEvent`,
+    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Event/CreateEvent`,
     {
       method: "POST",
       headers: {
@@ -102,13 +102,13 @@ export const deleteEvent = async (id: string): Promise<void> => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     }
   );
   if (!response.ok) {
     throw new Error("Failed to delete event");
   }
-  return response.json();
 };
 
 export const deleteEventImage = async (
@@ -121,13 +121,13 @@ export const deleteEventImage = async (
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     }
   );
   if (!response.ok) {
     throw new Error("Failed to delete photo");
   }
-  return response.json();
 };
 export const addEventImage = async (
   eventId: string,

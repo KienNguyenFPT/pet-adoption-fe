@@ -14,9 +14,10 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Layout from "../../../components/Layout";
-import { addEvent } from "../../../services/eventService";
-import { Event } from "../../../types/event";
+import Layout from "@/app/components/Layout";
+import moment from "moment";
+import { addEvent } from "@/app/services/eventService";
+import { Event } from "@/app/types/event";
 import { Alert } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 const AddEvent = () => {
@@ -38,8 +39,19 @@ const AddEvent = () => {
 
   const handleAddEvent = async () => {
     try {
-      await addEvent(newEvent);
-      router.push("/admin/event-management");
+      if (
+        newEvent.startDate &&
+        newEvent.endDate &&
+        moment(newEvent.startDate).isAfter(moment(newEvent.endDate))
+      ) {
+        setNotification({
+          message: "End date must be after start date",
+          type: "error",
+        });
+      } else {
+        await addEvent(newEvent);
+        router.push("/admin/event-management");
+      }
     } catch (error) {
       setNotification({ message: "Failed to adding event.", type: "error" });
       console.error("Error adding event:", error);
@@ -65,7 +77,7 @@ const AddEvent = () => {
         <Grid container spacing={2}>
           <Grid item xs={4}>
             <TextField
-              label="Name"
+              label="Input Event Name"
               value={newEvent.eventName}
               onChange={(e) =>
                 setNewEvent({ ...newEvent, eventName: e.target.value })
@@ -130,6 +142,7 @@ const AddEvent = () => {
                 setNewEvent({ ...newEvent, startDate: e.target.value })
               }
               fullWidth
+              placeholder="YYYY-MM-DD"
             />
           </Grid>
           <Grid item xs={4}>
@@ -140,6 +153,7 @@ const AddEvent = () => {
                 setNewEvent({ ...newEvent, endDate: e.target.value })
               }
               fullWidth
+              placeholder="YYYY-MM-DD"
             />
           </Grid>
         </Grid>

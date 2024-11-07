@@ -4,9 +4,9 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
-import Layout from "../../../components/Layout";
-import { addShelter } from "../../../services/shelterService";
-import { Shelter } from "../../../types/shelter";
+import Layout from "@/app/components/Layout";
+import { addShelter } from "@/app/services/shelterService";
+import { Shelter } from "@/app/types/shelter";
 import { getAllShelters } from "@/app/services/shelterService";
 import { Alert } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
@@ -63,7 +63,7 @@ const AddShelter = () => {
           </Alert>
         )}
       </div>
-      <Box component="form" sx={{ mb: 2, ml: 2, mr: 2 }}>
+      <Box component="form" sx={{ m: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={4}>
             <TextField

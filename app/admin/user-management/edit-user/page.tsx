@@ -15,9 +15,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Layout from "../../../components/Layout";
-import { updateUser, getUserById } from "../../../services/userService";
-import { User } from "../../../types/user";
+import Layout from "@/app/components/Layout";
+import { updateUser, getUserById } from "@/app/services/userService";
+import { User } from "@/app/types/user";
 import { useSearchParams } from "next/navigation";
 import { Alert } from "@mui/material";
 
@@ -26,16 +26,12 @@ const EditUser = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-  const [newUser, setNewUser] = useState<Omit<User, "id">>({
-    userName: "",
-    age: "",
-    breed: "",
-    gender: "",
-    description: "",
-    rescuedDate: "",
-    shelterId: "",
-    shelterName: "",
-    userImages: null,
+  const [newUser, setNewUser] = useState<User>({
+    id: "",
+    emailAddress: "",
+    fullName: "",
+    phoneNumber: "",
+    role: 0,
   });
   const [notification, setNotification] = useState<{
     message: string;
@@ -58,6 +54,7 @@ const EditUser = () => {
   useEffect(() => {
     if (id) {
       getUserById(id).then((response) => {
+        console.log(response.data);
         setUser(response.data);
         setNewUser(response.data);
       });
@@ -99,7 +96,7 @@ const EditUser = () => {
   return (
     <Layout>
       <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-        Edit User <b> {newUser.userName}</b>
+        Edit User <b> {newUser.fullName}</b>
       </Typography>
       <div style={{ marginBottom: "15px" }}>
         {notification && (
@@ -113,75 +110,57 @@ const EditUser = () => {
       </div>
       <Box component="form" sx={{ mb: 2, ml: 2, mr: 2 }}>
         <Grid container spacing={2}>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField
-              label="User Name"
-              value={newUser.userName}
+              label="Email Address"
+              value={newUser.emailAddress}
               onChange={(e) =>
-                setNewUser({ ...newUser, userName: e.target.value })
+                setNewUser({ ...newUser, emailAddress: e.target.value })
               }
               fullWidth
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField
-              label="Breed"
-              value={newUser.breed}
+              label="FullName"
+              value={newUser.fullName}
               onChange={(e) =>
-                setNewUser({ ...newUser, breed: e.target.value })
+                setNewUser({ ...newUser, fullName: e.target.value })
               }
               fullWidth
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField
-              label="Age"
-              value={newUser.age}
-              onChange={(e) => setNewUser({ ...newUser, age: e.target.value })}
+              label="Phone Number"
+              value={newUser.phoneNumber}
+              onChange={(e) =>
+                setNewUser({ ...newUser, phoneNumber: e.target.value })
+              }
               fullWidth
             />
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <FormControl fullWidth>
-              <InputLabel id="gender-id-label">Gender</InputLabel>
+              <InputLabel id="gender-id-label">Role</InputLabel>
               <Select
                 labelId="gender-id-label"
-                value={newUser.gender}
+                value={newUser.role}
                 onChange={(e) =>
-                  setNewUser({ ...newUser, gender: e.target.value })
+                  setNewUser({ ...newUser, role: +e.target.value })
                 }
               >
-                <MenuItem key="Male" value="Male" selected>
-                  Male
+                <MenuItem key="0" value="0" selected>
+                  Admin
                 </MenuItem>
-                <MenuItem key="Female" value="Female">
-                  Female
+                <MenuItem key="2" value="2">
+                  Staff
                 </MenuItem>
-                <MenuItem key="Other" value="Other">
-                  Other
+                <MenuItem key="1" value="1">
+                  User
                 </MenuItem>
               </Select>
             </FormControl>
-          </Grid>
-          <Grid item xs={8}>
-            <TextField
-              label="Description"
-              value={newUser.description}
-              onChange={(e) =>
-                setNewUser({ ...newUser, description: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Rescued Date"
-              value={newUser.rescuedDate}
-              onChange={(e) =>
-                setNewUser({ ...newUser, rescuedDate: e.target.value })
-              }
-              fullWidth
-            />
           </Grid>
         </Grid>
         <Button variant="contained" onClick={handleUpdateUser} sx={{ mt: 2 }}>

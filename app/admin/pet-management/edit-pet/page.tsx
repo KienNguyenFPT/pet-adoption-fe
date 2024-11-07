@@ -15,14 +15,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Layout from "../../../components/Layout";
-import { updatePet, getPetById } from "../../../services/petService";
-import { Pet } from "../../../types/pet";
+import Layout from "@/app/components/Layout";
+import { updatePet, getPetById } from "@/app/services/petService";
+import { Pet } from "@/app/types/pet";
 import { getAllShelters } from "@/app/services/shelterService";
 import { Shelter } from "@/app/types/shelter";
 import { useSearchParams } from "next/navigation";
 import { Alert } from "@mui/material";
-import { addImage } from "../../../services/petService"; // Ensure this import is correct
+import { addImage } from "@/app/services/petService"; // Ensure this import is correct
 
 const EditPet = () => {
   const router = useRouter();

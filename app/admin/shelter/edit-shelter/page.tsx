@@ -4,9 +4,9 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
-import Layout from "../../../components/Layout";
-import { updateShelter } from "../../../services/shelterService";
-import { Shelter } from "../../../types/shelter";
+import Layout from "@/app/components/Layout";
+import { updateShelter } from "@/app/services/shelterService";
+import { Shelter } from "@/app/types/shelter";
 import { getAllShelters } from "@/app/services/shelterService";
 import { useSearchParams } from "next/navigation";
 import { Alert } from "@mui/material";

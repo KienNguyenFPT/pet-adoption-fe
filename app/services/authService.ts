@@ -24,16 +24,14 @@ export async function handleLogin(emailAddress: string, passwordHash: string) {
 
       const d = {
         username: decodedToken.Email,
-        role: decodedToken[
-          "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-        ],
+        role: decodedToken.Role,
         accessToken: data.token,
       };
       return d;
     } else {
       return data;
     }
-  } catch (error: any) {
+  } catch (error) {
     throw new Error("Invalid credentials");
   }
 }

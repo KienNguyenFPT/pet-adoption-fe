@@ -1,13 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Adoption {
   id: string;
-  adoptionName: string;
-  age: string;
-  breed: string;
-  gender: string;
-  description: string;
-  rescuedDate: string | null;
-  shelterId: string;
-  shelterName: string;
-  adoptionImages: any | null;
+  applicationDate: string;
+  approvalDate: string;
+  adoptionStatus: number;
+  adoptionReason: string;
+  petExperience: string;
+  address: string;
+  contactNumber: string;
+  notes: string;
+  userEmail: string;
+  userId: string;
+  petId: string;
+  petName: string;
+  petImages: any;
 }

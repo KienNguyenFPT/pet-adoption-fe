@@ -14,9 +14,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Layout from "../../../components/Layout";
-import { addUser } from "../../../services/userService";
-import { User } from "../../../types/user";
+import Layout from "@/app/components/Layout";
+import { addUser } from "@/app/services/userService";
+import { User } from "@/app/types/user";
 import { Alert } from "@mui/material";
 
 const AddUser = () => {

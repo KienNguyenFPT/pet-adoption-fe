@@ -3,15 +3,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  TableCell,
-  TableRow,
-  Typography,
-  TableHead,
-  Backdrop,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Layout from "../../components/Layout";
 import { deleteHealth, getAllHealth } from "../../services/petHealthService";
@@ -21,21 +13,14 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import { TableHealthColumns } from "./health-constant";
-import PreviewIcon from "@mui/icons-material/Preview";
 import { Alert } from "@mui/material";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from "@mui/material";
-import moment from "moment";
+import { Pet } from "@/app/types/pet";
 const HealthManagement = () => {
   const router = useRouter();
-  const [Healths, setHealths] = useState<Health[]>([]);
+  const [healths, setHealths] = useState<Health[]>([]);
+  const [pets, setPets] = useState<Pet[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [openDialog, setOpenDialog] = useState(false);
   const [selectedHealth, setSelectedHealth] = useState<Health | null>(null);
   const [notification, setNotification] = useState<{
     message: string;
@@ -55,57 +40,37 @@ const HealthManagement = () => {
   const fetchHealths = async () => {
     try {
       const res = await getAllHealth();
-
-      if (res && res.success) {
-        setHealths(res.data);
-      } else {
-        setNotification({
-          message: "Failed to fetch Healths",
-          type: "error",
-        });
-      }
+      setHealths(res.data);
     } catch (error) {
-      console.error("Error fetching Healths:", error);
+      console.error("Error fetching healths:", error);
       setNotification({
-        message: "Failed to fetch Healths.",
+        message: "Failed to fetch healths.",
         type: "error",
       });
     }
   };
 
   const handleEditHealth = (id: string) => {
-    router.push(`/admin/Health-management/edit-Health?id=${id}`);
-  };
-
-  const handleViewHealth = (id: string) => {
-    const Health = Healths.find((Health) => Health.id === id);
-    if (Health) {
-      setSelectedHealth(Health);
-      setOpenDialog(true);
-    }
+    router.push(`/admin/health-management/edit-health?id=${id}`);
   };
 
   const handleDeleteHealth = async (id: string) => {
     try {
       await deleteHealth(id);
-      setHealths(Healths.filter((Health) => Health.id !== id));
+      setHealths(healths.filter((health) => health.id !== id));
       setNotification({
-        message: "Healthdeleted successfully!",
+        message: "Health deleted successfully!",
         type: "success",
       });
     } catch (error) {
-      console.error("Error deleting Health:", error);
+      console.error("Error deleting health:", error);
       setNotification({
-        message: "Failed to delete Health.",
+        message: "Failed to delete health.",
         type: "error",
       });
     }
   };
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-    setSelectedHealth(null);
-  };
   useEffect(() => {
     fetchHealths();
   }, []);
@@ -139,13 +104,6 @@ const HealthManagement = () => {
           return (
             <>
               <div style={{ display: "flex", gap: "8px" }}>
-                {" "}
-                <IconButton
-                  onClick={() => handleViewHealth(tableMeta.rowData[0])}
-                  color="primary"
-                >
-                  <PreviewIcon />
-                </IconButton>
                 <IconButton
                   onClick={() => handleEditHealth(tableMeta.rowData[0])}
                   color="primary"
@@ -159,60 +117,6 @@ const HealthManagement = () => {
                   <DeleteIcon />
                 </IconButton>
               </div>
-              <Dialog
-                PaperProps={{
-                  style: { width: "600px", maxWidth: "90%" },
-                }}
-                sx={{
-                  "& .MuiBackdrop-root": {
-                    backgroundColor: "rgba(0, 0, 0, 0.2)",
-                  },
-                }}
-                open={openDialog}
-                onClose={handleCloseDialog}
-              >
-                <DialogTitle>
-                  <b>VIEW</b>
-                </DialogTitle>
-                <DialogContent>
-                  {selectedHealth && (
-                    <div>
-                      <p>
-                        <strong>Name:</strong> {selectedHealth.healthName}
-                      </p>
-                      <p>
-                        <strong>Age:</strong> {selectedHealth.age}
-                      </p>
-                      <p>
-                        <strong>Breed:</strong> {selectedHealth.breed}
-                      </p>
-                      <p>
-                        <strong>Gender:</strong> {selectedHealth.gender}
-                      </p>
-                      <p>
-                        <strong>Description:</strong>{" "}
-                        {selectedHealth.description}
-                      </p>
-                      <p>
-                        <strong>Rescued Date:</strong>{" "}
-                        {selectedHealth.rescuedDate
-                          ? moment(new Date(selectedHealth.rescuedDate)).format(
-                              "DD/MM/YYYY"
-                            )
-                          : ""}
-                      </p>
-                      <p>
-                        <strong>Shelter:</strong> {selectedHealth.shelterName}
-                      </p>
-                    </div>
-                  )}
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleCloseDialog} color="primary">
-                    Close
-                  </Button>
-                </DialogActions>
-              </Dialog>
             </>
           );
         },
@@ -231,12 +135,12 @@ const HealthManagement = () => {
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-          HealthManagement
+          Health Management
         </Typography>
         <Button
           sx={{ mr: 2 }}
           variant="contained"
-          onClick={() => router.push("/admin/Health-management/add-Health")}
+          onClick={() => router.push("/admin/health-management/add-health")}
         >
           Add New Health
         </Button>
@@ -254,7 +158,7 @@ const HealthManagement = () => {
       <Box>
         <MUIDataTable
           title={""}
-          data={Healths}
+          data={healths}
           columns={columns}
           options={{
             download: false,

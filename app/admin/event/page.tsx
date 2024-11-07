@@ -28,13 +28,14 @@ import { IconButton } from "@mui/material";
 import { TableEventColumns } from "./event-constant";
 import PreviewIcon from "@mui/icons-material/Preview";
 import { Alert } from "@mui/material";
+import moment from "moment";
 import {
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import moment from "moment";
+
 const EventManagement = () => {
   const router = useRouter();
   const [events, setEvents] = useState<Event[]>([]);
@@ -253,7 +254,7 @@ const EventManagement = () => {
                               <img
                                 src={image.imageUrl}
                                 style={{
-                                  width: "150px",
+                                  width: "100px",
                                   height: "auto",
                                   borderRadius: "8px",
                                 }}

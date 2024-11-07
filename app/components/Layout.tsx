@@ -100,7 +100,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <ListItem
               className={styles.listItemButton}
               component="button"
-              onClick={() => router.push("/admin/pet-health")}
+              onClick={() => router.push("/admin/health-management")}
             >
               <ListItemIcon>
                 <img
@@ -110,7 +110,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                   height={24}
                 />
               </ListItemIcon>
-              <ListItemText primary="Pet Heath" />
+              <ListItemText primary="Pet's Heath" />
             </ListItem>
             <ListItem
               className={styles.listItemButton}
@@ -142,7 +142,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </ListItemIcon>
               <ListItemText primary="Shelter" />
             </ListItem>
-            <ListItem
+            {/* <ListItem
               className={styles.listItemButton}
               component="button"
               onClick={() => router.push("/admin/donation")}
@@ -156,7 +156,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 />
               </ListItemIcon>
               <ListItemText primary="Donation" />
-            </ListItem>
+            </ListItem> */}
             <ListItem
               className={styles.listItemButton}
               component="button"

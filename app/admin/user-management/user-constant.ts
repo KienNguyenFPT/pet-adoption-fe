@@ -10,78 +10,38 @@ export const TableUserColumns = [
     },
   },
   {
-    name: "userName",
-    label: "User Name",
+    name: "emailAddress",
+    label: "Email Address",
     options: {
       filter: true,
       sort: true,
     },
   },
   {
-    name: "age",
-    label: "Age",
+    name: "fullName",
+    label: "fullName",
     options: {
       filter: true,
       sort: true,
     },
   },
   {
-    name: "breed",
-    label: "Breed",
+    name: "phoneNumber",
+    label: "Phone Number",
     options: {
       filter: true,
       sort: true,
     },
   },
   {
-    name: "gender",
-    label: "Gender",
+    name: "role",
+    label: "Role",
     options: {
       filter: true,
       sort: true,
-    },
-  },
-  {
-    name: "description",
-    label: "Description",
-    options: {
-      filter: true,
-      sort: true,
-    },
-  },
-  {
-    name: "rescuedDate",
-    label: "Rescued Date",
-    options: {
-      filter: true,
-      sort: true,
-      customBodyRender: (value: string) => {
-        return moment(value).format("DD/MM/YYYY");
+      customBodyRender: (value: number) => {
+        return value == 0 ? "Admin" : value == 2 ? "Staff" : "User";
       },
     },
   },
-  {
-    name: "shelterId",
-    label: "Shelter Id",
-    options: {
-      filter: true,
-      sort: true,
-    },
-  },
-  {
-    name: "shelterName",
-    label: "Shelter Name",
-    options: {
-      filter: true,
-      sort: true,
-    },
-  },
-  // {
-  //   name: "userImages",
-  //   label: "Images",
-  //   options: {
-  //     filter: false,
-  //     sort: false,
-  //   },
-  // },
 ];

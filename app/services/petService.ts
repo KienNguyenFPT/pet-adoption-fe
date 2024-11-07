@@ -5,7 +5,9 @@ export const getAllPets = async (): Promise<Response> => {
     `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Pet/GetAllPets`,
     {
       method: "GET",
-      headers: {},
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     }
   );
   if (!response.ok) {

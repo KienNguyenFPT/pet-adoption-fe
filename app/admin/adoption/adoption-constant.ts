@@ -10,48 +10,88 @@ export const TableAdoptionColumns = [
     },
   },
   {
-    name: "AdoptionName",
-    label: "Adoption Name",
+    name: "userEmail",
+    label: "User Email",
     options: {
       filter: true,
       sort: true,
     },
   },
   {
-    name: "age",
-    label: "Age",
+    name: "userId",
+    label: "User Id",
     options: {
       filter: true,
       sort: true,
     },
   },
   {
-    name: "breed",
-    label: "Breed",
+    name: "contactNumber",
+    label: "Contact Number",
     options: {
       filter: true,
       sort: true,
     },
   },
   {
-    name: "gender",
-    label: "Gender",
+    name: "address",
+    label: "Address",
     options: {
       filter: true,
       sort: true,
     },
   },
   {
-    name: "description",
-    label: "Description",
+    name: "petExperience",
+    label: "Pet Experience",
     options: {
       filter: true,
       sort: true,
     },
   },
   {
-    name: "rescuedDate",
-    label: "Rescued Date",
+    name: "petId",
+    label: "Pet Id",
+    options: {
+      filter: true,
+      sort: true,
+    },
+  },
+  {
+    name: "petName",
+    label: "Pet Name",
+    options: {
+      filter: true,
+      sort: true,
+    },
+  },
+  {
+    name: "notes",
+    label: "Notes",
+    options: {
+      filter: true,
+      sort: true,
+    },
+  },
+  {
+    name: "adoptionReason",
+    label: "Adoption Reason",
+    options: {
+      filter: true,
+      sort: true,
+    },
+  },
+  {
+    name: "adoptionStatus",
+    label: "Adoption Status",
+    options: {
+      filter: true,
+      sort: true,
+    },
+  },
+  {
+    name: "applicationDate",
+    label: "Application Date",
     options: {
       filter: true,
       sort: true,
@@ -61,27 +101,14 @@ export const TableAdoptionColumns = [
     },
   },
   {
-    name: "shelterId",
-    label: "Shelter Id",
+    name: "approvalDate",
+    label: "Approval Date",
     options: {
       filter: true,
       sort: true,
+      customBodyRender: (value: string) => {
+        return moment(value).format("DD/MM/YYYY");
+      },
     },
   },
-  {
-    name: "shelterName",
-    label: "Shelter Name",
-    options: {
-      filter: true,
-      sort: true,
-    },
-  },
-  // {
-  //   name: "AdoptionImages",
-  //   label: "Images",
-  //   options: {
-  //     filter: false,
-  //     sort: false,
-  //   },
-  // },
 ];
