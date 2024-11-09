@@ -40,19 +40,22 @@ const EventManagement = () => {
   const router = useRouter();
   const [events, setEvents] = useState<Event[]>([]);
   const [images, setImages] = useState<Event[]>([]);
-  const [eventId, setEventId] = useState<Event[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [notification, setNotification] = useState<{
     message: string;
+    action: string | null;
     type: "success" | "error";
   } | null>(null);
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
+    if (
+      !accessToken ||
+      !["Staff", "Administrator"].includes(localStorage.getItem("role") || "")
+    ) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
@@ -67,11 +70,19 @@ const EventManagement = () => {
       if (res && res.success) {
         setEvents(res.data);
       } else {
-        setNotification({ message: "Failed to fetch events", type: "error" });
+        setNotification({
+          message: "Failed to fetch events",
+          action: "fetch",
+          type: "error",
+        });
       }
     } catch (error) {
       console.error("Error fetching events:", error);
-      setNotification({ message: "Failed to fetch events.", type: "error" });
+      setNotification({
+        message: "Failed to fetch events.",
+        action: "fetch",
+        type: "error",
+      });
     }
   };
 
@@ -90,25 +101,38 @@ const EventManagement = () => {
           setSelectedEvent(event);
           setOpenDialog(true);
         } else {
-          setNotification({ message: "Failed to fetch images", type: "error" });
+          setNotification({
+            message: "Failed to fetch images",
+            action: "view",
+            type: "error",
+          });
         }
       } catch (error) {
         console.error("Error fetching images:", error);
-        setNotification({ message: "Failed to fetch images.", type: "error" });
+        setNotification({
+          message: "Failed to fetch images.",
+          action: "view",
+          type: "error",
+        });
       }
     }
   };
   const handleDeleteEventImage = async (idEvent: string, idPhoto: string) => {
     try {
       await deleteEventImage(idEvent, idPhoto);
-      setEvents(images.filter((i) => i.id !== idPhoto));
+      setImages(images.filter((i) => i.id !== idPhoto));
       setNotification({
         message: "Image deleted successfully!",
+        action: "delete-photo",
         type: "success",
       });
     } catch (error) {
       console.error("Error deleting image:", error);
-      setNotification({ message: "Failed to delete image.", type: "error" });
+      setNotification({
+        message: "Failed to delete image.",
+        action: "delete-photo",
+        type: "error",
+      });
     }
   };
   const handleDeleteEvent = async (id: string) => {
@@ -117,11 +141,16 @@ const EventManagement = () => {
       setEvents(events.filter((event) => event.id !== id));
       setNotification({
         message: "Event deleted successfully!",
+        action: "delete",
         type: "success",
       });
     } catch (error) {
       console.error("Error deleting event:", error);
-      setNotification({ message: "Failed to delete event.", type: "error" });
+      setNotification({
+        message: "Failed to delete event.",
+        action: "delete",
+        type: "error",
+      });
     }
   };
 
@@ -148,7 +177,18 @@ const EventManagement = () => {
     );
   }
   if (!isAuthenticated) {
-    return null;
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
   }
   const columns = [
     ...TableEventColumns,
@@ -169,18 +209,24 @@ const EventManagement = () => {
                 >
                   <PreviewIcon />
                 </IconButton>
-                <IconButton
-                  onClick={() => handleEditEvent(tableMeta.rowData[0])}
-                  color="primary"
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => handleDeleteEvent(tableMeta.rowData[0])}
-                  color="secondary"
-                >
-                  <DeleteIcon />
-                </IconButton>
+                {["Staff", "Administrator"].includes(
+                  localStorage.getItem("role") || ""
+                ) && (
+                  <>
+                    <IconButton
+                      onClick={() => handleEditEvent(tableMeta.rowData[0])}
+                      color="primary"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handleDeleteEvent(tableMeta.rowData[0])}
+                      color="secondary"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
+                )}
               </div>
               <Dialog
                 PaperProps={{
@@ -233,6 +279,19 @@ const EventManagement = () => {
                             )
                           : ""}
                       </p>
+                      <div>
+                        <div>
+                          {notification &&
+                            notification.action == "delete-photo" && (
+                              <Alert
+                                severity={notification.type}
+                                onClose={() => setNotification(null)}
+                              >
+                                {notification.message}
+                              </Alert>
+                            )}
+                        </div>
+                      </div>
                       {images.length > 0 && (
                         <div
                           style={{
@@ -303,16 +362,18 @@ const EventManagement = () => {
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
           Event Management
         </Typography>
-        <Button
-          sx={{ mr: 2 }}
-          variant="contained"
-          onClick={() => router.push("/admin/event/add-event")}
-        >
-          Add New Event
-        </Button>
+        {["Staff"].includes(localStorage.getItem("role") || "") && (
+          <Button
+            sx={{ mr: 2 }}
+            variant="contained"
+            onClick={() => router.push("/admin/event/add-event")}
+          >
+            Add New Event
+          </Button>
+        )}
       </Box>
       <div>
-        {notification && (
+        {notification && notification.action != "delete-photo" && (
           <Alert
             severity={notification.type}
             onClose={() => setNotification(null)}

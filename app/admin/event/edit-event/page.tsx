@@ -25,10 +25,12 @@ import { Event } from "@/app/types/event";
 import { useSearchParams } from "next/navigation";
 import { Alert } from "@mui/material";
 import moment from "moment";
+import { Modal, CircularProgress } from "@mui/material";
 
 const EditEvent = () => {
   const router = useRouter();
   const [event, setEvent] = useState<Event | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [newEvent, setNewEvent] = useState<Omit<Event, "images">>({
     id: "",
     eventName: "",
@@ -62,6 +64,7 @@ const EditEvent = () => {
   }, [id]);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsLoading(true);
     if (id && e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       try {
@@ -84,6 +87,8 @@ const EditEvent = () => {
           type: "error",
         });
         console.error("Error uploading image:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
@@ -101,7 +106,7 @@ const EditEvent = () => {
           });
         } else {
           await updateEvent({ ...event, ...newEvent });
-          router.push("/admin/event-management");
+          router.push("/admin/event");
         }
       } catch (error) {
         setNotification({
@@ -118,6 +123,20 @@ const EditEvent = () => {
       <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
         Edit Event <b> {newEvent.eventName}</b>
       </Typography>
+      <Modal
+        open={isLoading}
+        aria-labelledby="loading-modal"
+        aria-describedby="loading-indicator"
+      >
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100vh"
+        >
+          <CircularProgress />
+        </Box>
+      </Modal>
       <div style={{ marginBottom: "15px" }}>
         {notification && (
           <Alert

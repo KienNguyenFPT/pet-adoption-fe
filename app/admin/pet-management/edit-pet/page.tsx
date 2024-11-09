@@ -23,9 +23,24 @@ import { Shelter } from "@/app/types/shelter";
 import { useSearchParams } from "next/navigation";
 import { Alert } from "@mui/material";
 import { addImage } from "@/app/services/petService"; // Ensure this import is correct
+import { Modal, CircularProgress } from "@mui/material";
 
 const EditPet = () => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (
+      !accessToken ||
+      !["Administrator", "Staff"].includes(localStorage.getItem("role") || "")
+    ) {
+      router.push("/admin/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+  }, [router]);
   const [pet, setPet] = useState<Pet | null>(null);
   const [newPet, setNewPet] = useState<Omit<Pet, "id">>({
     petName: "",
@@ -88,6 +103,7 @@ const EditPet = () => {
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsLoading(true);
     if (id && e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       try {
@@ -110,14 +126,45 @@ const EditPet = () => {
           type: "error",
         });
         console.error("Error uploading image:", error);
+      } finally {
+        setIsLoading(false);
       }
     }
   };
+
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
+  }
   return (
     <Layout>
       <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
         Edit Pet <b> {newPet.petName}</b>
       </Typography>
+      <Modal
+        open={isLoading}
+        aria-labelledby="loading-modal"
+        aria-describedby="loading-indicator"
+      >
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100vh"
+        >
+          <CircularProgress />
+        </Box>
+      </Modal>
       <div style={{ marginBottom: "15px" }}>
         {notification && (
           <Alert
@@ -204,7 +251,7 @@ const EditPet = () => {
           </Grid>
           <Grid item xs={4}>
             <FormControl fullWidth>
-              <InputLabel id="shelter-id-label">Shelter</InputLabel>
+              <InputLabel id="shelter-id-label">Shelter Address</InputLabel>
               <Select
                 labelId="shelter-id-label"
                 value={newPet.shelterId}
@@ -212,9 +259,9 @@ const EditPet = () => {
                   setNewPet({ ...newPet, shelterId: e.target.value })
                 }
               >
-                {shelters.map((shelter) => (
+                {shelters.map((shelter: Shelter) => (
                   <MenuItem key={shelter.id} value={shelter.id}>
-                    {shelter.description}
+                    {shelter.address}
                   </MenuItem>
                 ))}
               </Select>

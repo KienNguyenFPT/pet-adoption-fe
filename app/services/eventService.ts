@@ -116,12 +116,12 @@ export const deleteEventImage = async (
   idPhoto: string
 ): Promise<void> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Event/DeleteEvent/${idEvent}?photoId=${idPhoto}`,
+    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/EventImages/DeleteEventPhoto/Delete/${idEvent}?photoId=${idPhoto}`,
     {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        // Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     }
   );

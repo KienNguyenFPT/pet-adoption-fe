@@ -40,9 +40,7 @@ export const TableHealthColumns = [
       filter: true,
       sort: true,
       customBodyRender: (value: string) => {
-        return value == "0"
-          ? "Have not been vaccinated".toUpperCase()
-          : "Have been vaccinated";
+        return value == "0" ? "No" : "Yes";
       },
     },
   },

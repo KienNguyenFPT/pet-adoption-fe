@@ -25,11 +25,11 @@ const AddEvent = () => {
   const [newEvent, setNewEvent] = useState<Omit<Event, "images">>({
     id: uuidv4(),
     eventName: "",
-    startDate: "",
-    endDate: "",
+    startDate: moment(new Date()).format("YYYY-MM-DD"),
+    endDate: moment(new Date()).add(1, "d").format("YYYY-MM-DD"),
     location: "",
     description: "",
-    eventType: 0,
+    eventType: null,
     eventStatus: 1,
   });
   const [notification, setNotification] = useState<{
@@ -39,6 +39,12 @@ const AddEvent = () => {
 
   const handleAddEvent = async () => {
     try {
+      if (newEvent.eventName == "") {
+        setNotification({
+          message: "Please enter event name",
+          type: "error",
+        });
+      }
       if (
         newEvent.startDate &&
         newEvent.endDate &&
@@ -50,7 +56,7 @@ const AddEvent = () => {
         });
       } else {
         await addEvent(newEvent);
-        router.push("/admin/event-management");
+        router.push("/admin/event");
       }
     } catch (error) {
       setNotification({ message: "Failed to adding event.", type: "error" });
@@ -83,6 +89,7 @@ const AddEvent = () => {
                 setNewEvent({ ...newEvent, eventName: e.target.value })
               }
               fullWidth
+              required={true}
             />
           </Grid>
           <Grid item xs={4}>

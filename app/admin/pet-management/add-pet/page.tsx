@@ -24,6 +24,21 @@ import moment from "moment";
 
 const AddPet = () => {
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (
+      !accessToken ||
+      !["Administrator", "Staff"].includes(localStorage.getItem("role") || "")
+    ) {
+      router.push("/admin/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+    setIsLoading(false);
+  }, [router]);
   const [newPet, setNewPet] = useState<Omit<Pet, "id">>({
     petName: "",
     age: "",
@@ -62,7 +77,34 @@ const AddPet = () => {
       console.error("Error adding pet:", error);
     }
   };
-
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
+  }
   return (
     <Layout>
       <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
@@ -150,7 +192,7 @@ const AddPet = () => {
           </Grid>
           <Grid item xs={4}>
             <FormControl fullWidth>
-              <InputLabel id="shelter-id-label">Shelter</InputLabel>
+              <InputLabel id="shelter-id-label">Shelter Address</InputLabel>
               <Select
                 labelId="shelter-id-label"
                 value={newPet.shelterId}
@@ -158,9 +200,9 @@ const AddPet = () => {
                   setNewPet({ ...newPet, shelterId: e.target.value })
                 }
               >
-                {shelters.map((shelter) => (
+                {shelters.map((shelter: Shelter) => (
                   <MenuItem key={shelter.id} value={shelter.id}>
-                    {shelter.description}
+                    {shelter.address}
                   </MenuItem>
                 ))}
               </Select>

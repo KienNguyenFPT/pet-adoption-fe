@@ -29,7 +29,10 @@ const HealthManagement = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
+    if (
+      !accessToken ||
+      !["Staff", "Administrator"].includes(localStorage.getItem("role") || "")
+    ) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
@@ -90,7 +93,18 @@ const HealthManagement = () => {
     );
   }
   if (!isAuthenticated) {
-    return null;
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
   }
   const columns = [
     ...TableHealthColumns,
@@ -103,20 +117,24 @@ const HealthManagement = () => {
         customBodyRender: (value: any, tableMeta: { rowData: string[] }) => {
           return (
             <>
-              <div style={{ display: "flex", gap: "8px" }}>
-                <IconButton
-                  onClick={() => handleEditHealth(tableMeta.rowData[0])}
-                  color="primary"
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => handleDeleteHealth(tableMeta.rowData[0])}
-                  color="secondary"
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </div>
+              {["Staff", "Administrator"].includes(
+                localStorage.getItem("role") || ""
+              ) && (
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <IconButton
+                    onClick={() => handleEditHealth(tableMeta.rowData[0])}
+                    color="primary"
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handleDeleteHealth(tableMeta.rowData[0])}
+                    color="secondary"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              )}
             </>
           );
         },
@@ -137,13 +155,15 @@ const HealthManagement = () => {
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
           Health Management
         </Typography>
-        <Button
-          sx={{ mr: 2 }}
-          variant="contained"
-          onClick={() => router.push("/admin/health-management/add-health")}
-        >
-          Add New Health
-        </Button>
+        {["Staff"].includes(localStorage.getItem("role") || "") && (
+          <Button
+            sx={{ mr: 2 }}
+            variant="contained"
+            onClick={() => router.push("/admin/health-management/add-health")}
+          >
+            Add New Health
+          </Button>
+        )}
       </Box>
       <div>
         {notification && (

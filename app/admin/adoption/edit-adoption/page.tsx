@@ -44,14 +44,28 @@ const AddAdoption = () => {
     petName: "",
     petImages: "",
   });
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [pets, setPets] = useState<Pet[]>([]);
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error";
   } | null>(null);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (
+      !accessToken ||
+      !["Staff"].includes(localStorage.getItem("role") || "")
+    ) {
+      router.push("/admin/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+    setIsLoading(false);
+  }, [router]);
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
-
   useEffect(() => {
     if (id) {
       getAdoptionById(id).then((response) => {
@@ -90,7 +104,36 @@ const AddAdoption = () => {
 
     getPets();
   }, []);
-  const handleAddAdoption = async () => {
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have to permissions to view this page.
+      </div>
+    );
+  }
+
+  const handleUpdateAdoption = async () => {
     try {
       await updateAdoption(newAdoption);
       router.push("/admin/adoption");
@@ -106,7 +149,7 @@ const AddAdoption = () => {
   return (
     <Layout>
       <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-        Edit Adoption Fom
+        Edit Adoption Form
       </Typography>
       <div>
         {notification && (
@@ -209,8 +252,12 @@ const AddAdoption = () => {
             />
           </Grid>
         </Grid>
-        <Button variant="contained" onClick={handleAddAdoption} sx={{ mt: 2 }}>
-          Add Adoption
+        <Button
+          variant="contained"
+          onClick={handleUpdateAdoption}
+          sx={{ mt: 2 }}
+        >
+          Edit Adoption
         </Button>
       </Box>
     </Layout>

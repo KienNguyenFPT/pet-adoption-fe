@@ -14,34 +14,41 @@ const Login = () => {
  * admin:
     luandktss170438@fpt.edu.vn
     123
-
+  staff: luandokhacthanh@gmail.com 
+          123
   user:
     choben13052003@gmail.com
     123456
  */
   const onLogin = async () => {
+    setError("");
     try {
       const data = await handleLogin(email, password);
       console.log(data);
-
-      if (data.accessToken) {
-        localStorage.setItem("accessToken", data.accessToken);
-        localStorage.setItem("username", data.username);
-        localStorage.setItem("role", data.role);
-        document.cookie = `accessToken=${data.accessToken}; path=/;`;
-      }
-
-      if (data.role === "Administrator") {
-        router.push("/admin");
-      } else if (data.role === "Staff") {
-        // alert("Logged in as Staff");
-        router.push("/admin");
+      if (data.success == false) {
+        setError(data.message);
       } else {
-        // alert("Unknown role");
-        setError("Unknown role");
+        if (data.accessToken) {
+          localStorage.setItem("accessToken", data.accessToken);
+          localStorage.setItem("username", data.username);
+          localStorage.setItem("role", data.role);
+          localStorage.setItem("userId", data.userId);
+          document.cookie = `accessToken=${data.accessToken}; path=/;`;
+        }
+
+        if (data.role === "Administrator") {
+          router.push("/admin");
+        } else if (data.role === "Staff") {
+          // alert("Logged in as Staff");
+          router.push("/admin");
+        } else {
+          router.push("/admin");
+          // setError("Unknown role");
+        }
       }
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      setError("Login failed. Please try later.");
+      console.log(error);
     }
   };
 

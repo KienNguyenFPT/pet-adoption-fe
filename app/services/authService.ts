@@ -26,6 +26,7 @@ export async function handleLogin(emailAddress: string, passwordHash: string) {
         username: decodedToken.Email,
         role: decodedToken.Role,
         accessToken: data.token,
+        userId: decodedToken.Id,
       };
       return d;
     } else {

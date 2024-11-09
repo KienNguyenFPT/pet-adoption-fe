@@ -37,7 +37,10 @@ const PetImages = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
+    if (
+      !accessToken ||
+      !["Staff", "Administrator"].includes(localStorage.getItem("role") || "")
+    ) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
@@ -103,7 +106,18 @@ const PetImages = () => {
     );
   }
   if (!isAuthenticated) {
-    return null;
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
   }
   return (
     <Layout>
@@ -116,7 +130,7 @@ const PetImages = () => {
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-          Pet Images
+          Pet's Images
         </Typography>
       </Box>
       <div>
@@ -152,17 +166,21 @@ const PetImages = () => {
                         style={{ width: "200px", height: "auto" }}
                       />
                     </TableCell>
-                    <TableCell>
-                      <IconButton onClick={() => handleDeleteImage(img.id)}>
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
+                    {["Administrator", "Staff"].includes(
+                      localStorage.getItem("role") || ""
+                    ) && (
+                      <TableCell>
+                        <IconButton onClick={() => handleDeleteImage(img.id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
             </TableBody>
           </Table>
           <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
+            rowsPerPageOptions={[5, 10, 25, 100]}
             component="div"
             count={images.length}
             rowsPerPage={rowsPerPage}

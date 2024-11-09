@@ -22,6 +22,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import { TablePetColumns } from "./pet-constant";
 import PreviewIcon from "@mui/icons-material/Preview";
+import SupportIcon from "@mui/icons-material/SupportAgent";
 import { Alert } from "@mui/material";
 import {
   Dialog,
@@ -134,8 +135,7 @@ const PetManagement = () => {
           return (
             <>
               <div style={{ display: "flex", gap: "8px" }}>
-                {" "}
-                <Tooltip title="View">
+                <Tooltip title="View Full Info">
                   <IconButton
                     onClick={() => handleViewPet(tableMeta.rowData[0])}
                     color="primary"
@@ -143,30 +143,41 @@ const PetManagement = () => {
                     <PreviewIcon />
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="View Adoption">
-                  <IconButton
-                    onClick={() => handleViewAdoption(tableMeta.rowData[0])}
-                    color="primary"
-                  >
-                    <PreviewIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Edit">
-                  <IconButton
-                    onClick={() => handleEditPet(tableMeta.rowData[0])}
-                    color="primary"
-                  >
-                    <EditIcon />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete">
-                  <IconButton
-                    onClick={() => handleDeletePet(tableMeta.rowData[0])}
-                    color="secondary"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </Tooltip>
+                {["User", "Staff"].includes(
+                  localStorage.getItem("role") || ""
+                ) && (
+                  <Tooltip title="View Adoption">
+                    <IconButton
+                      onClick={() => handleViewAdoption(tableMeta.rowData[0])}
+                      color="primary"
+                    >
+                      <SupportIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                {["Administrator", "Staff"].includes(
+                  localStorage.getItem("role") || ""
+                ) && (
+                  <>
+                    <Tooltip title="Edit">
+                      <IconButton
+                        onClick={() => handleEditPet(tableMeta.rowData[0])}
+                        color="primary"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+
+                    <Tooltip title="Delete">
+                      <IconButton
+                        onClick={() => handleDeletePet(tableMeta.rowData[0])}
+                        color="secondary"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                )}
               </div>
               <Dialog
                 PaperProps={{
@@ -181,37 +192,55 @@ const PetManagement = () => {
                 onClose={handleCloseDialog}
               >
                 <DialogTitle>
-                  <b>VIEW</b>
+                  <b>
+                    VIEW <i>{selectedPet ? selectedPet.petName : ""}</i>
+                  </b>
                 </DialogTitle>
                 <DialogContent>
                   {selectedPet && (
                     <div>
-                      <p>
-                        <strong>Name:</strong> {selectedPet.petName}
-                      </p>
-                      <p>
-                        <strong>Age:</strong> {selectedPet.age}
-                      </p>
-                      <p>
-                        <strong>Breed:</strong> {selectedPet.breed}
-                      </p>
-                      <p>
-                        <strong>Gender:</strong> {selectedPet.gender}
-                      </p>
-                      <p>
-                        <strong>Description:</strong> {selectedPet.description}
-                      </p>
-                      <p>
-                        <strong>Rescued Date:</strong>{" "}
-                        {selectedPet.rescuedDate
-                          ? moment(new Date(selectedPet.rescuedDate)).format(
-                              "DD/MM/YYYY"
-                            )
-                          : ""}
-                      </p>
-                      <p>
-                        <strong>Shelter:</strong> {selectedPet.shelterName}
-                      </p>
+                      {[
+                        {
+                          label: "Pet Name",
+                          value: selectedPet.petName,
+                        },
+                        { label: "Age", value: selectedPet.age },
+                        {
+                          label: "Breed",
+                          value: selectedPet.breed,
+                        },
+                        {
+                          label: "Gender",
+                          value: selectedPet.gender,
+                        },
+                        {
+                          label: "Description",
+                          value: selectedPet.description,
+                        },
+                        {
+                          label: "Rescued Date",
+                          value: selectedPet.rescuedDate
+                            ? moment(new Date(selectedPet.rescuedDate)).format(
+                                "DD/MM/YYYY"
+                              )
+                            : "",
+                        },
+                        {
+                          label: "Shelter",
+                          value: selectedPet.shelterName,
+                        },
+                      ].map((item, index) => (
+                        <p
+                          key={index}
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <strong>{item.label}:</strong>{" "}
+                          <span>{item.value}</span>
+                        </p>
+                      ))}
                       {selectedPet.petImages &&
                         selectedPet.petImages.length > 0 && (
                           <div
@@ -220,6 +249,7 @@ const PetManagement = () => {
                               flexWrap: "wrap",
                               gap: "8px",
                               marginTop: "10px",
+                              marginBottom: "10px",
                             }}
                           >
                             {selectedPet.petImages.map(
@@ -228,7 +258,7 @@ const PetManagement = () => {
                                   key={index}
                                   src={image.image}
                                   style={{
-                                    width: "150px",
+                                    width: "160px",
                                     height: "auto",
                                     borderRadius: "8px",
                                   }}
@@ -242,7 +272,7 @@ const PetManagement = () => {
                 </DialogContent>
                 <DialogActions>
                   <Button onClick={handleCloseDialog} color="primary">
-                    Close
+                    <b>Close</b>
                   </Button>
                 </DialogActions>
               </Dialog>
@@ -264,15 +294,19 @@ const PetManagement = () => {
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-          Pet Management
+          All Pet's Information
         </Typography>
-        <Button
-          sx={{ mr: 2 }}
-          variant="contained"
-          onClick={() => router.push("/admin/pet-management/add-pet")}
-        >
-          Add New Pet
-        </Button>
+        {["Administrator", "Staff"].includes(
+          localStorage.getItem("role") || ""
+        ) && (
+          <Button
+            sx={{ mr: 2 }}
+            variant="contained"
+            onClick={() => router.push("/admin/pet-management/add-pet")}
+          >
+            Add New Pet
+          </Button>
+        )}
       </Box>
       <div>
         {notification && (

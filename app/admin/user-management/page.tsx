@@ -20,7 +20,6 @@ const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error";

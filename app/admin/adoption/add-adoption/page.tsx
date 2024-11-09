@@ -39,11 +39,25 @@ const AddAdoption = () => {
     petImages: "",
   });
   const [pets, setPets] = useState<Pet[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error";
   } | null>(null);
-
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (
+      !accessToken ||
+      !["User"].includes(localStorage.getItem("role") || "")
+    ) {
+      router.push("/admin/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+    setIsLoading(false);
+  }, [router]);
   useEffect(() => {
     const getPets = async () => {
       try {
@@ -66,6 +80,34 @@ const AddAdoption = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
+  }
   return (
     <Layout>
       <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>

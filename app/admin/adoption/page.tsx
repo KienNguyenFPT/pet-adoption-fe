@@ -38,7 +38,7 @@ import moment from "moment";
 
 const AdoptionManagement = () => {
   const router = useRouter();
-  const [Adoptions, setAdoptions] = useState<Adoption[]>([]);
+  const [adoptions, setAdoptions] = useState<Adoption[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
@@ -52,7 +52,10 @@ const AdoptionManagement = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken) {
+    if (
+      !accessToken ||
+      !["User", "Staff"].includes(localStorage.getItem("role") || "")
+    ) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
@@ -127,9 +130,9 @@ const AdoptionManagement = () => {
   };
 
   const handleViewAdoption = (id: string) => {
-    const Adoption = Adoptions.find((Adoption) => Adoption.id === id);
-    if (Adoption) {
-      setSelectedAdoption(Adoption);
+    const adoption = adoptions.find((ad) => ad.id === id);
+    if (adoption) {
+      setSelectedAdoption(adoption);
       setOpenDialog(true);
     }
   };
@@ -137,7 +140,7 @@ const AdoptionManagement = () => {
   const handleDeleteAdoption = async (id: string) => {
     try {
       await deleteAdoption(id);
-      setAdoptions(Adoptions.filter((a) => a.id !== id));
+      setAdoptions(adoptions.filter((a) => a.id !== id));
       setNotification({
         message: "Adoption deleted successfully!",
         type: "success",
@@ -167,9 +170,6 @@ const AdoptionManagement = () => {
       </div>
     );
   }
-  if (!isAuthenticated) {
-    return null;
-  }
   const columns = [
     ...TableAdoptionColumns,
     {
@@ -182,25 +182,28 @@ const AdoptionManagement = () => {
           return (
             <>
               <div style={{ display: "flex", gap: "8px" }}>
-                {" "}
                 <IconButton
                   onClick={() => handleViewAdoption(tableMeta.rowData[0])}
                   color="primary"
                 >
                   <PreviewIcon />
                 </IconButton>
-                <IconButton
-                  onClick={() => handleEditAdoption(tableMeta.rowData[0])}
-                  color="primary"
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => handleDeleteAdoption(tableMeta.rowData[0])}
-                  color="secondary"
-                >
-                  <DeleteIcon />
-                </IconButton>
+                {["Staff"].includes(localStorage.getItem("role") || "") && (
+                  <>
+                    <IconButton
+                      onClick={() => handleEditAdoption(tableMeta.rowData[0])}
+                      color="primary"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handleDeleteAdoption(tableMeta.rowData[0])}
+                      color="secondary"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
+                )}
               </div>
               <Dialog
                 PaperProps={{
@@ -311,6 +314,20 @@ const AdoptionManagement = () => {
     },
   ];
 
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
+  }
   return (
     <Layout>
       <Box
@@ -324,13 +341,15 @@ const AdoptionManagement = () => {
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
           Adoption Management
         </Typography>
-        <Button
-          sx={{ mr: 2 }}
-          variant="contained"
-          onClick={() => router.push("/admin/adoption/add-adoption")}
-        >
-          Add New Adoption
-        </Button>
+        {["User"].includes(localStorage.getItem("role") || "") && (
+          <Button
+            sx={{ mr: 2 }}
+            variant="contained"
+            onClick={() => router.push("/admin/adoption/add-adoption")}
+          >
+            Add New Adoption
+          </Button>
+        )}
       </Box>
       <div>
         {notification && (
@@ -345,7 +364,7 @@ const AdoptionManagement = () => {
       <Box sx={{ mt: 2 }}>
         <MUIDataTable
           title={""}
-          data={Adoptions}
+          data={adoptions}
           columns={columns}
           options={{
             download: false,

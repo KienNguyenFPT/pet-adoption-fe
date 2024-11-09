@@ -25,22 +25,13 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import { TableShelterColumns } from "./shelter-constant";
-import PreviewIcon from "@mui/icons-material/Preview";
 import { Alert } from "@mui/material";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-} from "@mui/material";
-import moment from "moment";
+
 const ShelterManagement = () => {
   const router = useRouter();
   const [shelters, setShelters] = useState<Shelter[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [selectedShelter, setSelectedShelter] = useState<Shelter | null>(null);
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error";
@@ -73,14 +64,6 @@ const ShelterManagement = () => {
 
   const handleEditShelter = (id: string) => {
     router.push(`/admin/shelter/edit-shelter?id=${id}`);
-  };
-
-  const handleViewShelter = (id: string) => {
-    const shelter = shelters.find((shelter) => shelter.id === id);
-    if (shelter) {
-      setSelectedShelter(shelter);
-      setOpenDialog(true);
-    }
   };
 
   const handleDeleteShelter = async (id: string) => {
@@ -128,20 +111,22 @@ const ShelterManagement = () => {
         customBodyRender: (value: any, tableMeta: { rowData: string[] }) => {
           return (
             <>
-              <div style={{ display: "flex", gap: "8px" }}>
-                <IconButton
-                  onClick={() => handleEditShelter(tableMeta.rowData[0])}
-                  color="primary"
-                >
-                  <EditIcon />
-                </IconButton>
-                <IconButton
-                  onClick={() => handleDeleteShelter(tableMeta.rowData[0])}
-                  color="secondary"
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </div>
+              {["Staff"].includes(localStorage.getItem("role") || "") && (
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <IconButton
+                    onClick={() => handleEditShelter(tableMeta.rowData[0])}
+                    color="primary"
+                  >
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton
+                    onClick={() => handleDeleteShelter(tableMeta.rowData[0])}
+                    color="secondary"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              )}
             </>
           );
         },
@@ -160,15 +145,17 @@ const ShelterManagement = () => {
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-          Shelter Management
+          All Shelter Information
         </Typography>
-        <Button
-          sx={{ mr: 2 }}
-          variant="contained"
-          onClick={() => router.push("/admin/shelter/add-shelter")}
-        >
-          Add New Shelter
-        </Button>
+        {["Staff"].includes(localStorage.getItem("role") || "") && (
+          <Button
+            sx={{ mr: 2 }}
+            variant="contained"
+            onClick={() => router.push("/admin/shelter/add-shelter")}
+          >
+            Add New Shelter
+          </Button>
+        )}
       </Box>
       <div>
         {notification && (

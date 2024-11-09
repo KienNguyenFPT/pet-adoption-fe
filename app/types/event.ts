@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Event {
-  eventType: number;
+  eventType: number | null;
   images: any | null;
   id: string;
   startDate: string;

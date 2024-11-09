@@ -1,31 +1,50 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-// import moment from "moment";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
+  Typography,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
   Select,
   TextField,
-  Typography,
 } from "@mui/material";
-import Layout from "@/app/components/Layout";
-import { updateUser, getUserById } from "@/app/services/userService";
-import { User } from "@/app/types/user";
-import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import Layout from "../../components/Layout";
+import { getUserById, updateUser } from "../../services/userService";
+import { User } from "../../types/user";
 import { Alert } from "@mui/material";
 
-const EditUser = () => {
+const UserManagement = () => {
   const router = useRouter();
+  const [role, setRole] = useState<string | null>(null);
+  useEffect(() => {
+    const storedRole = localStorage.getItem("role");
+    console.log({ storedRole });
+
+    if (storedRole) {
+      setRole(role);
+    }
+  }, []);
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<User | null>(null);
+  const [notification, setNotification] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
+  const [user, setUser] = useState<User>({
+    id: localStorage.getItem("userId") || "",
+    emailAddress: "",
+    fullName: "",
+    phoneNumber: "",
+    role: 0,
+  });
   const [newUser, setNewUser] = useState<User>({
     id: "",
     emailAddress: "",
@@ -33,17 +52,9 @@ const EditUser = () => {
     phoneNumber: "",
     role: 0,
   });
-  const [notification, setNotification] = useState<{
-    message: string;
-    type: "success" | "error";
-  } | null>(null);
-
-  const searchParams = useSearchParams();
-  const id = searchParams.get("id");
-
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (!accessToken || localStorage.getItem("role") != "Administrator") {
+    if (!accessToken) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
@@ -52,20 +63,34 @@ const EditUser = () => {
   }, [router]);
 
   useEffect(() => {
-    if (id) {
-      getUserById(id).then((response) => {
-        console.log(response.data);
-        setUser(response.data);
-        setNewUser(response.data);
-      });
-    }
-  }, [id]);
+    const fetchUser = async () => {
+      try {
+        const res = await getUserById(localStorage.getItem("userId") || "");
+        console.log(res);
+
+        if (res && res.success) {
+          setUser(res.data);
+          setNewUser(res.data);
+          console.log(user, newUser);
+        } else {
+          setNotification({ message: "Failed to get user", type: "error" });
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
+        setNotification({ message: "Failed to fetch user.", type: "error" });
+      }
+    };
+    fetchUser();
+  }, []);
 
   const handleUpdateUser = async () => {
     if (user) {
       try {
         await updateUser({ ...user, ...newUser });
-        router.push("/admin/user-management");
+        setNotification({
+          message: "User updated successfully",
+          type: "success",
+        });
       } catch (error) {
         setNotification({
           message: "Failed to updating user.",
@@ -75,7 +100,6 @@ const EditUser = () => {
       }
     }
   };
-
   if (isLoading) {
     return (
       <div
@@ -93,10 +117,11 @@ const EditUser = () => {
   if (!isAuthenticated) {
     return null;
   }
+
   return (
     <Layout>
       <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-        Edit User <b> {newUser.fullName}</b>
+        Update Profile Information
       </Typography>
       <div style={{ marginBottom: "15px" }}>
         {notification && (
@@ -141,7 +166,7 @@ const EditUser = () => {
             />
           </Grid>
           <Grid item xs={6}>
-            <FormControl fullWidth>
+            <FormControl fullWidth disabled={true}>
               <InputLabel id="gender-id-label">Role</InputLabel>
               <Select
                 labelId="gender-id-label"
@@ -150,7 +175,7 @@ const EditUser = () => {
                   setNewUser({ ...newUser, role: +e.target.value })
                 }
               >
-                <MenuItem key="0" value="0" selected>
+                <MenuItem key="0" value="0">
                   Admin
                 </MenuItem>
                 <MenuItem key="2" value="2">
@@ -171,4 +196,4 @@ const EditUser = () => {
   );
 };
 
-export default EditUser;
+export default UserManagement;

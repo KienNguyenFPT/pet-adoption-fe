@@ -13,9 +13,22 @@ import { v4 as uuidv4 } from "uuid";
 
 const AddShelter = () => {
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (
+      !accessToken ||
+      !["Staff"].includes(localStorage.getItem("role") || "")
+    ) {
+      router.push("/admin/login");
+    } else {
+      setIsAuthenticated(true);
+    }
+    setIsLoading(false);
+  }, [router]);
   const [newShelter, setNewShelter] = useState<Shelter>({
     id: uuidv4(),
-    name: "",
     address: "",
     description: "",
     currentCapacity: 0,
@@ -40,14 +53,59 @@ const AddShelter = () => {
   }, []);
   const handleAddShelter = async () => {
     try {
-      await addShelter(newShelter);
-      router.push("/admin/shelter");
+      if (
+        !newShelter.limitedCapacity ||
+        newShelter.address == "" ||
+        newShelter.description == ""
+      ) {
+        setNotification({
+          message:
+            "Limit aapacity, address, and description are required fields",
+          type: "error",
+        });
+      } else if (newShelter.currentCapacity > newShelter.limitedCapacity) {
+        setNotification({
+          message:
+            "Current capacity must be less than or equal Limited capacity",
+          type: "error",
+        });
+      } else {
+        await addShelter(newShelter);
+        router.push("/admin/shelter");
+      }
     } catch (error) {
       setNotification({ message: "Failed to adding shelter.", type: "error" });
       console.error("Error adding shelter:", error);
     }
   };
-
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
+  }
   return (
     <Layout>
       <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>

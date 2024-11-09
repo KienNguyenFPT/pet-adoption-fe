@@ -21,6 +21,7 @@ export const deleteImage = async (photoId: string): Promise<void> => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
       },
     }
   );
