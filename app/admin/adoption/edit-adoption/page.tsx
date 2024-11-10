@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Suspense } from "react";
-
+import React, { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import moment from "moment";
 import {
   Box,
   Button,
@@ -12,8 +11,8 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  TextField,
   Typography,
+  Alert,
 } from "@mui/material";
 import Layout from "@/app/components/Layout";
 import {
@@ -22,12 +21,9 @@ import {
 } from "@/app/services/adoptionService";
 import { Adoption } from "@/app/types/adoption";
 import { getAllPets } from "@/app/services/petService";
-import { Alert } from "@mui/material";
-import moment from "moment";
-import { useSearchParams } from "next/navigation";
 import { Pet } from "@/app/types/pet";
 
-const AddAdoption = () => {
+const EditAdoption = () => {
   const router = useRouter();
   const [newAdoption, setNewAdoption] = useState<Adoption>({
     id: "",
@@ -65,29 +61,34 @@ const AddAdoption = () => {
     }
     setIsLoading(false);
   }, [router]);
+
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
+
   useEffect(() => {
     if (id) {
       getAdoptionById(id).then((response) => {
-        console.log(response);
         if (!response || !response.success) {
           setNotification({
             message: "Failed to get adoption.",
             type: "error",
           });
+        } else {
+          const ad: Adoption = response.data as Adoption;
+          setNewAdoption({
+            ...ad,
+            applicationDate: moment(new Date(ad?.applicationDate)).format(
+              "YYYY-MM-DD"
+            ),
+            approvalDate: moment(new Date(ad?.approvalDate)).format(
+              "YYYY-MM-DD"
+            ),
+          });
         }
-        const ad: Adoption = response.data as Adoption;
-        setNewAdoption({
-          ...ad,
-          applicationDate: moment(new Date(ad?.applicationDate)).format(
-            "YYYY-MM-DD"
-          ),
-          approvalDate: moment(new Date(ad?.approvalDate)).format("YYYY-MM-DD"),
-        });
       });
     }
   }, [id]);
+
   useEffect(() => {
     const getPets = async () => {
       try {
@@ -104,6 +105,7 @@ const AddAdoption = () => {
 
     getPets();
   }, []);
+
   if (isLoading) {
     return (
       <div
@@ -128,7 +130,7 @@ const AddAdoption = () => {
           justifyContent: "center",
         }}
       >
-        You do not have to permissions to view this page.
+        You do not have permissions to view this page.
       </div>
     );
   }
@@ -147,7 +149,7 @@ const AddAdoption = () => {
   };
 
   return (
-    <Suspense  fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div>Loading...</div>}>
       <Layout>
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
           Edit Adoption Form
@@ -182,83 +184,14 @@ const AddAdoption = () => {
                 </Select>
               </FormControl>
             </Grid>
-  
-            <Grid item xs={4}>
-              <TextField
-                label="Pet Experience"
-                value={newAdoption.petExperience}
-                onChange={(e) =>
-                  setNewAdoption({
-                    ...newAdoption,
-                    petExperience: e.target.value,
-                  })
-                }
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                label="Address"
-                value={newAdoption.address}
-                onChange={(e) =>
-                  setNewAdoption({ ...newAdoption, address: e.target.value })
-                }
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                label="User Email"
-                value={newAdoption.userEmail}
-                onChange={(e) =>
-                  setNewAdoption({ ...newAdoption, userEmail: e.target.value })
-                }
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={8}>
-              <TextField
-                label="Adoption Reason"
-                value={newAdoption.adoptionReason}
-                onChange={(e) =>
-                  setNewAdoption({
-                    ...newAdoption,
-                    adoptionReason: e.target.value,
-                  })
-                }
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <TextField
-                label="Contact Number"
-                value={newAdoption.contactNumber}
-                onChange={(e) =>
-                  setNewAdoption({
-                    ...newAdoption,
-                    contactNumber: e.target.value,
-                  })
-                }
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={8}>
-              <TextField
-                label="Notes"
-                value={newAdoption.notes}
-                onChange={(e) =>
-                  setNewAdoption({ ...newAdoption, notes: e.target.value })
-                }
-                fullWidth
-              />
-            </Grid>
+            {/* Add other form fields here */}
           </Grid>
           <Button
             variant="contained"
             onClick={handleUpdateAdoption}
             sx={{ mt: 2 }}
           >
-            Edit Adoption
+            Update
           </Button>
         </Box>
       </Layout>
@@ -266,4 +199,4 @@ const AddAdoption = () => {
   );
 };
 
-export default AddAdoption;
+export default EditAdoption;
