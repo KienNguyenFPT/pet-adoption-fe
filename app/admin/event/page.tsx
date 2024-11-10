@@ -1,17 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  TableCell,
-  TableRow,
-  Typography,
-  TableHead,
-  Backdrop,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Layout from "../../components/Layout";
 import {
@@ -35,11 +25,12 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
+import { Image } from "@/app/types/common";
 
 const EventManagement = () => {
   const router = useRouter();
   const [events, setEvents] = useState<Event[]>([]);
-  const [images, setImages] = useState<Event[]>([]);
+  const [images, setImages] = useState<Image[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
@@ -117,7 +108,7 @@ const EventManagement = () => {
       }
     }
   };
-  const handleDeleteEventImage = async (idEvent: string, idPhoto: string) => {
+  const handleDeleteEventImage = async (idEvent: string, idPhoto: any) => {
     try {
       await deleteEventImage(idEvent, idPhoto);
       setImages(images.filter((i) => i.id !== idPhoto));
@@ -198,7 +189,8 @@ const EventManagement = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value: any, tableMeta: { rowData: string[] }) => {
+        customBodyRender: (value: string, tableMeta: { rowData: string[] }) => {
+          console.log(value);
           return (
             <>
               <div style={{ display: "flex", gap: "8px" }}>
@@ -301,7 +293,7 @@ const EventManagement = () => {
                             marginTop: "10px",
                           }}
                         >
-                          {images.map((image: any) => (
+                          {images.map((image: Image) => (
                             <div
                               key={image.id}
                               style={{
@@ -391,7 +383,7 @@ const EventManagement = () => {
             download: false,
             responsive: "vertical",
             pagination: true,
-            onRowClick: (rowData: any) => {
+            onRowClick: (rowData) => {
               console.log("Row clicked:", rowData);
             },
             print: false,

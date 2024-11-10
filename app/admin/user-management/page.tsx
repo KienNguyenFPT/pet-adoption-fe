@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Layout from "../../components/Layout";
 import { deleteUser, getAllUsers } from "../../services/userService";
@@ -108,7 +106,7 @@ const UserManagement = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value: any, tableMeta: { rowData: string[] }) => {
+        customBodyRender: (value: string, tableMeta: { rowData: string[] }) => {
           return (
             <>
               <div style={{ display: "flex", gap: "8px" }}>
@@ -167,9 +165,6 @@ const UserManagement = () => {
             download: false,
             responsive: "vertical",
             pagination: true,
-            onRowClick: (rowData: any) => {
-              console.log("Row clicked:", rowData);
-            },
             print: false,
             fixedHeader: true,
             selectableRows: "none",

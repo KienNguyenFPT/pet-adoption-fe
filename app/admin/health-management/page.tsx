@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -14,14 +12,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import { TableHealthColumns } from "./health-constant";
 import { Alert } from "@mui/material";
-import { Pet } from "@/app/types/pet";
 const HealthManagement = () => {
   const router = useRouter();
   const [healths, setHealths] = useState<Health[]>([]);
-  const [pets, setPets] = useState<Pet[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selectedHealth, setSelectedHealth] = useState<Health | null>(null);
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error";
@@ -114,7 +109,7 @@ const HealthManagement = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value: any, tableMeta: { rowData: string[] }) => {
+        customBodyRender: (value: string, tableMeta: { rowData: string[] }) => {
           return (
             <>
               {["Staff", "Administrator"].includes(
@@ -184,9 +179,7 @@ const HealthManagement = () => {
             download: false,
             responsive: "vertical",
             pagination: true,
-            onRowClick: (rowData: any) => {
-              console.log("Row clicked:", rowData);
-            },
+            onRowClick: () => {},
             print: false,
             fixedHeader: true,
             selectableRows: "none",

@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { access } from "fs";
 import jwt from "jsonwebtoken";
+import { TokenDecoded } from "../types/user";
 
 export async function handleLogin(emailAddress: string, passwordHash: string) {
   try {
@@ -19,7 +18,7 @@ export async function handleLogin(emailAddress: string, passwordHash: string) {
     // }
     const data = await response.json();
     if (data.success) {
-      const decodedToken = jwt.decode(data.token);
+      const decodedToken = jwt.decode(data.token) as TokenDecoded;
       if (!decodedToken) throw new Error("Invalid credentials.");
 
       const d = {
@@ -33,6 +32,7 @@ export async function handleLogin(emailAddress: string, passwordHash: string) {
       return data;
     }
   } catch (error) {
+    console.log(error);
     throw new Error("Invalid credentials");
   }
 }
@@ -76,9 +76,8 @@ export async function handleRegister(
 
     if (data == "Registered Successfully") return data;
     throw new Error("Register failed! Please try again.");
-  } catch (error: any) {
-    console.log(error.message);
-
+  } catch (error) {
+    console.log(error);
     throw new Error("Register failed. Please try again.");
   }
 }

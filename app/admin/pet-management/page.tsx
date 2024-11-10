@@ -1,17 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  TableCell,
-  TableRow,
-  Typography,
-  TableHead,
-  Backdrop,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Layout from "../../components/Layout";
 import { deletePet, getAllPets } from "../../services/petService";
@@ -24,6 +14,7 @@ import { TablePetColumns } from "./pet-constant";
 import PreviewIcon from "@mui/icons-material/Preview";
 import SupportIcon from "@mui/icons-material/SupportAgent";
 import { Alert } from "@mui/material";
+import { Image } from "@/app/types/common";
 import {
   Dialog,
   DialogTitle,
@@ -142,7 +133,7 @@ const PetManagement = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value: any, tableMeta: { rowData: string[] }) => {
+        customBodyRender: (value: string, tableMeta: { rowData: string[] }) => {
           return (
             <>
               <div style={{ display: "flex", gap: "8px" }}>
@@ -264,7 +255,7 @@ const PetManagement = () => {
                             }}
                           >
                             {selectedPet.petImages.map(
-                              (image: any, index: number) => (
+                              (image: Image, index: number) => (
                                 <img
                                   key={index}
                                   src={image.image}
@@ -305,7 +296,7 @@ const PetManagement = () => {
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-          All Pet's Information
+          All Pet Information
         </Typography>
         {["Administrator", "Staff"].includes(
           localStorage.getItem("role") || ""
@@ -338,9 +329,7 @@ const PetManagement = () => {
             download: false,
             responsive: "vertical",
             pagination: true,
-            onRowClick: (rowData: any) => {
-              console.log("Row clicked:", rowData);
-            },
+            onRowClick: () => {},
             print: false,
             fixedHeader: true,
             selectableRows: "none",

@@ -1,24 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  Button,
-  TableCell,
-  TableRow,
-  Typography,
-  TableHead,
-  Backdrop,
-} from "@mui/material";
+import { Typography, Box, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Layout from "../../components/Layout";
-import {
-  addShelter,
-  deleteShelter,
-  getAllShelters,
-} from "../../services/shelterService";
+import { deleteShelter, getAllShelters } from "../../services/shelterService";
 import MUIDataTable from "mui-datatables";
 import { Shelter } from "../../types/shelter";
 import EditIcon from "@mui/icons-material/Edit";
@@ -108,7 +94,7 @@ const ShelterManagement = () => {
       options: {
         filter: false,
         sort: false,
-        customBodyRender: (value: any, tableMeta: { rowData: string[] }) => {
+        customBodyRender: (value: string, tableMeta: { rowData: string[] }) => {
           return (
             <>
               {["Staff"].includes(localStorage.getItem("role") || "") && (
@@ -176,9 +162,7 @@ const ShelterManagement = () => {
             download: false,
             responsive: "vertical",
             pagination: true,
-            onRowClick: (rowData: any) => {
-              console.log("Row clicked:", rowData);
-            },
+            onRowClick: () => {},
             print: false,
             fixedHeader: true,
             selectableRows: "none",

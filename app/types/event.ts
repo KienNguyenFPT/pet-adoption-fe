@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Event {
   eventType: number | null;
   images: any | null;
