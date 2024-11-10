@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Suspense } from "react";
+
 import {
   Box,
   Button,
@@ -145,120 +147,122 @@ const AddAdoption = () => {
   };
 
   return (
-    <Layout>
-      <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-        Edit Adoption Form
-      </Typography>
-      <div>
-        {notification && (
-          <Alert
-            severity={notification.type}
-            onClose={() => setNotification(null)}
-          >
-            {notification.message}
-          </Alert>
-        )}
-      </div>
-      <Box component="form" sx={{ m: 2 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <FormControl fullWidth>
-              <InputLabel id="pet-id-label">Select Pet</InputLabel>
-              <Select
-                labelId="pet-id-label"
-                value={newAdoption.petId}
+    <Suspense>
+      <Layout>
+        <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
+          Edit Adoption Form
+        </Typography>
+        <div>
+          {notification && (
+            <Alert
+              severity={notification.type}
+              onClose={() => setNotification(null)}
+            >
+              {notification.message}
+            </Alert>
+          )}
+        </div>
+        <Box component="form" sx={{ m: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <FormControl fullWidth>
+                <InputLabel id="pet-id-label">Select Pet</InputLabel>
+                <Select
+                  labelId="pet-id-label"
+                  value={newAdoption.petId}
+                  onChange={(e) =>
+                    setNewAdoption({ ...newAdoption, petId: e.target.value })
+                  }
+                >
+                  {pets.map((pet) => (
+                    <MenuItem key={pet.id} value={pet.id}>
+                      {pet.petName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+  
+            <Grid item xs={4}>
+              <TextField
+                label="Pet Experience"
+                value={newAdoption.petExperience}
                 onChange={(e) =>
-                  setNewAdoption({ ...newAdoption, petId: e.target.value })
+                  setNewAdoption({
+                    ...newAdoption,
+                    petExperience: e.target.value,
+                  })
                 }
-              >
-                {pets.map((pet) => (
-                  <MenuItem key={pet.id} value={pet.id}>
-                    {pet.petName}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Address"
+                value={newAdoption.address}
+                onChange={(e) =>
+                  setNewAdoption({ ...newAdoption, address: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="User Email"
+                value={newAdoption.userEmail}
+                onChange={(e) =>
+                  setNewAdoption({ ...newAdoption, userEmail: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8}>
+              <TextField
+                label="Adoption Reason"
+                value={newAdoption.adoptionReason}
+                onChange={(e) =>
+                  setNewAdoption({
+                    ...newAdoption,
+                    adoptionReason: e.target.value,
+                  })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Contact Number"
+                value={newAdoption.contactNumber}
+                onChange={(e) =>
+                  setNewAdoption({
+                    ...newAdoption,
+                    contactNumber: e.target.value,
+                  })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8}>
+              <TextField
+                label="Notes"
+                value={newAdoption.notes}
+                onChange={(e) =>
+                  setNewAdoption({ ...newAdoption, notes: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
           </Grid>
-
-          <Grid item xs={4}>
-            <TextField
-              label="Pet Experience"
-              value={newAdoption.petExperience}
-              onChange={(e) =>
-                setNewAdoption({
-                  ...newAdoption,
-                  petExperience: e.target.value,
-                })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Address"
-              value={newAdoption.address}
-              onChange={(e) =>
-                setNewAdoption({ ...newAdoption, address: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="User Email"
-              value={newAdoption.userEmail}
-              onChange={(e) =>
-                setNewAdoption({ ...newAdoption, userEmail: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={8}>
-            <TextField
-              label="Adoption Reason"
-              value={newAdoption.adoptionReason}
-              onChange={(e) =>
-                setNewAdoption({
-                  ...newAdoption,
-                  adoptionReason: e.target.value,
-                })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Contact Number"
-              value={newAdoption.contactNumber}
-              onChange={(e) =>
-                setNewAdoption({
-                  ...newAdoption,
-                  contactNumber: e.target.value,
-                })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={8}>
-            <TextField
-              label="Notes"
-              value={newAdoption.notes}
-              onChange={(e) =>
-                setNewAdoption({ ...newAdoption, notes: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-        </Grid>
-        <Button
-          variant="contained"
-          onClick={handleUpdateAdoption}
-          sx={{ mt: 2 }}
-        >
-          Edit Adoption
-        </Button>
-      </Box>
-    </Layout>
+          <Button
+            variant="contained"
+            onClick={handleUpdateAdoption}
+            sx={{ mt: 2 }}
+          >
+            Edit Adoption
+          </Button>
+        </Box>
+      </Layout>
+    </Suspense>
   );
 };
 
