@@ -54,8 +54,8 @@ const EditUser = () => {
     if (id) {
       getUserById(id).then((response) => {
         console.log(response.data);
-        setUser(response.data);
-        setNewUser(response.data);
+        setUser(response.data as User);
+        setNewUser(response.data as User);
       });
     }
   }, [id]);
