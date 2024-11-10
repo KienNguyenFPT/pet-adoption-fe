@@ -1,5 +1,5 @@
-import { Response } from "../types/pet";
 import { Shelter } from "../types/shelter";
+import { Response } from "../types/common";
 
 export const getAllShelters = async (): Promise<Response> => {
   console.log(process.env.NEXT_PUBLIC_API_GATEWAY);

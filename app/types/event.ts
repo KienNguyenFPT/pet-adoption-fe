@@ -1,6 +1,8 @@
+import { Image } from "./common";
+
 export interface Event {
   eventType: number | null;
-  images: any | null;
+  images: Image[] | null;
   id: string;
   startDate: string;
   endDate: string;

@@ -36,8 +36,10 @@ const Login = () => {
         phoneNumber
       );
       router.push("/admin/login");
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error) {
+      console.log(error);
+
+      setError("Fail to register");
     }
   };
 

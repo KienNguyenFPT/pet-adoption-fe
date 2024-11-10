@@ -1,5 +1,5 @@
-import { Response } from "../types/pet";
 import { User } from "../types/user";
+import { Response } from "../types/common";
 
 export const getAllUsers = async (): Promise<Response> => {
   const response = await fetch(

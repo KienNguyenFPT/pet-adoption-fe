@@ -59,7 +59,7 @@ const AddPet = () => {
     const getShelters = async () => {
       try {
         const response = await getAllShelters();
-        setShelters(response.data);
+        setShelters(response.data as Shelter[]);
       } catch (error) {
         console.error("Error fetching shelters:", error);
       }

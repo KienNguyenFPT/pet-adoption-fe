@@ -51,7 +51,7 @@ const PetManagement = () => {
       const res = await getAllPets();
 
       if (res && res.success) {
-        setPets(res.data);
+        setPets(res.data as Pet[]);
       } else {
         setNotification({ message: "Failed to fetch pets", type: "error" });
       }

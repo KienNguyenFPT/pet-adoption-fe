@@ -51,11 +51,12 @@ const EditEvent = () => {
   useEffect(() => {
     if (id) {
       getEventById(id).then((response) => {
-        setEvent(response.data);
+        const e = response.data as Event;
+        setEvent(e);
         setNewEvent({
-          ...response.data,
-          startDate: moment(response.data.startDate).format("YYYY-MM-DD"),
-          endDate: moment(response.data.endDate).format("YYYY-MM-DD"),
+          ...e,
+          startDate: moment(e.startDate).format("YYYY-MM-DD"),
+          endDate: moment(e.endDate).format("YYYY-MM-DD"),
         });
       });
     }

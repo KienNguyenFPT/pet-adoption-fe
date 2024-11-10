@@ -45,8 +45,10 @@ const EditShelter = () => {
     const getShelters = async () => {
       try {
         const response = await getAllShelters();
-        if (response.data?.length > 0) {
-          const sh = response.data.find((s: Shelter) => s.id == id);
+        if (response.data) {
+          const sh: Shelter = (response.data as Shelter[]).find(
+            (s: Shelter) => s.id == id
+          ) as Shelter;
           console.log(sh);
 
           setShelter(sh);

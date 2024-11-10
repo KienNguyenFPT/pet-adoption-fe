@@ -38,7 +38,7 @@ const UserManagement = () => {
       const res = await getAllUsers();
 
       if (res && res.success) {
-        setUsers(res.data);
+        setUsers(res.data as User[]);
       } else {
         setNotification({ message: "Failed to fetch users", type: "error" });
       }

@@ -59,7 +59,7 @@ const EventManagement = () => {
       const res = await getAllEvents();
 
       if (res && res.success) {
-        setEvents(res.data);
+        setEvents(res.data as Event[]);
       } else {
         setNotification({
           message: "Failed to fetch events",
@@ -88,7 +88,7 @@ const EventManagement = () => {
         console.log(res);
 
         if (res && res.success) {
-          setImages(res.data);
+          setImages(res.data as Image[]);
           setSelectedEvent(event);
           setOpenDialog(true);
         } else {
@@ -108,7 +108,7 @@ const EventManagement = () => {
       }
     }
   };
-  const handleDeleteEventImage = async (idEvent: string, idPhoto: any) => {
+  const handleDeleteEventImage = async (idEvent: string, idPhoto: string) => {
     try {
       await deleteEventImage(idEvent, idPhoto);
       setImages(images.filter((i) => i.id !== idPhoto));
@@ -314,7 +314,7 @@ const EventManagement = () => {
                                 onClick={() =>
                                   handleDeleteEventImage(
                                     selectedEvent.id,
-                                    image.id
+                                    image.id || ""
                                   )
                                 }
                                 color="secondary"

@@ -38,7 +38,7 @@ const HealthManagement = () => {
   const fetchHealths = async () => {
     try {
       const res = await getAllHealth();
-      setHealths(res.data);
+      setHealths(res.data as Health[]);
     } catch (error) {
       console.error("Error fetching healths:", error);
       setNotification({

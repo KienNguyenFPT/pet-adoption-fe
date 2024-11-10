@@ -38,7 +38,7 @@ const ShelterManagement = () => {
       const res = await getAllShelters();
 
       if (res && res.success) {
-        setShelters(res.data);
+        setShelters(res.data as Shelter[]);
       } else {
         setNotification({ message: "Failed to fetch shelters", type: "error" });
       }

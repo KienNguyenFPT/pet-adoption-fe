@@ -1,3 +1,4 @@
+import { Image } from "./common";
 export interface Adoption {
   id: string;
   applicationDate: string;
@@ -12,5 +13,5 @@ export interface Adoption {
   userId: string;
   petId: string;
   petName: string;
-  petImages: any;
+  petImages: Image[] | null | undefined;
 }

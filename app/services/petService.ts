@@ -1,4 +1,5 @@
-import { Pet, Response } from "../types/pet";
+import { Pet } from "../types/pet";
+import { Response } from "../types/common";
 
 export const getAllPets = async (): Promise<Response> => {
   const response = await fetch(

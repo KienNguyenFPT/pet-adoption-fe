@@ -1,4 +1,4 @@
-import { Response } from "../types/pet";
+import { Response } from "../types/common";
 
 export const getAllImages = async (): Promise<Response> => {
   const response = await fetch(

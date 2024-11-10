@@ -17,6 +17,7 @@
     "date-fns": "^3.6.0",
     "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
     "moment": "^2.30.1",
     "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/lodash": "^4.17.13",
     "@types/mui-datatables": "^4.3.12",
     "@types/node": "^20",
     "@types/react": "^18",

@@ -16,7 +16,7 @@ import {
 import { useRouter } from "next/navigation";
 import Layout from "../../components/Layout";
 import { getAllImages, deleteImage } from "../../services/imageService";
-import { Image } from "../../types/images";
+import { Image } from "../../types/common";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import { Alert } from "@mui/material";
@@ -49,7 +49,7 @@ const PetImages = () => {
       const res = await getAllImages();
 
       if (res && res.success) {
-        setimages(res.data);
+        setimages(res.data as Image[]);
       } else {
         setNotification({ message: "Failed to fetch images", type: "error" });
       }
@@ -152,7 +152,7 @@ const PetImages = () => {
             <TableBody>
               {images
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((img) => (
+                .map((img: Image) => (
                   <TableRow key={img.id}>
                     <TableCell>{img.id}</TableCell>
                     <TableCell>
@@ -166,7 +166,9 @@ const PetImages = () => {
                       localStorage.getItem("role") || ""
                     ) && (
                       <TableCell>
-                        <IconButton onClick={() => handleDeleteImage(img.id)}>
+                        <IconButton
+                          onClick={() => handleDeleteImage(img.id || "")}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>

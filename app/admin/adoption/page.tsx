@@ -25,6 +25,8 @@ import {
 } from "@mui/material";
 import { useSearchParams } from "next/navigation";
 import moment from "moment";
+import { Image } from "@/app/types/common";
+import * as _ from "lodash";
 
 const AdoptionManagement = () => {
   const router = useRouter();
@@ -67,22 +69,26 @@ const AdoptionManagement = () => {
               type: "error",
             });
           } else if (
-            response.data.id === "00000000-0000-0000-0000-000000000000"
+            _.get(response.data, "id") ===
+            "00000000-0000-0000-0000-000000000000"
           ) {
             setNotification({
               message: "Adoption not found.",
               type: "error",
             });
           } else {
-            setAdoptions({
-              ...response.data,
-              applicationDate: moment(
-                new Date(response.data?.applicationDate)
-              ).format("YYYY-MM-DD"),
-              approvalDate: moment(
-                new Date(response.data?.approvalDate)
-              ).format("YYYY-MM-DD"),
-            });
+            const ad = response.data as Adoption;
+            setAdoptions([
+              {
+                ...ad,
+                applicationDate: moment(new Date(ad.applicationDate)).format(
+                  "YYYY-MM-DD"
+                ),
+                approvalDate: moment(new Date(ad.approvalDate)).format(
+                  "YYYY-MM-DD"
+                ),
+              },
+            ]);
           }
         });
       } catch (error) {
@@ -97,7 +103,7 @@ const AdoptionManagement = () => {
         try {
           const res = await getAllAdoptions();
           if (res && res.success) {
-            setAdoptions(res.data);
+            setAdoptions(res.data as Adoption[]);
           } else {
             setNotification({
               message: "Failed to fetch adoptions",
@@ -275,7 +281,7 @@ const AdoptionManagement = () => {
                             }}
                           >
                             {selectedAdoption.petImages.map(
-                              (image, index: number) => (
+                              (image: Image, index: number) => (
                                 <img
                                   key={index}
                                   src={image.image}

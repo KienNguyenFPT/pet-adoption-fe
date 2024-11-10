@@ -1,4 +1,4 @@
-export interface Image {
-  id: string;
-  image: string | null;
-}
+// export interface Image {
+//   id: string;
+//   image: string | null;
+// }

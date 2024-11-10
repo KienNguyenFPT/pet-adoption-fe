@@ -1,6 +1,7 @@
-import { Pet, Response } from "../types/pet";
+import { Pet } from "../types/pet";
 import { Health } from "../types/health";
 import { getAllPets } from "./petService";
+import { Response } from "../types/common";
 
 export const getAllHealth = async (): Promise<Response> => {
   const response = await fetch(
@@ -18,12 +19,12 @@ export const getAllHealth = async (): Promise<Response> => {
   }
   const healths = await response.json();
   if (healths.success) {
-    const petsResonse = await getAllPets();
-    if (petsResonse && petsResonse.success) {
+    const petsResponse = await getAllPets();
+    if (petsResponse && petsResponse.success) {
       healths.data = healths.data.map((health: Health) => {
-        const petInfo = petsResonse.data.find(
+        const petInfo: Pet = (petsResponse.data as Pet[]).find(
           (pet: Pet) => pet.id == health.petId
-        );
+        ) as Pet;
         return { ...health, petName: petInfo?.petName };
       });
     }

@@ -67,8 +67,8 @@ const UserManagement = () => {
         console.log(res);
 
         if (res && res.success) {
-          setUser(res.data);
-          setNewUser(res.data);
+          setUser(res.data as User);
+          setNewUser(res.data as User);
           console.log(user, newUser);
         } else {
           setNotification({ message: "Failed to get user", type: "error" });

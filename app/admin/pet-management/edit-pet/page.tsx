@@ -62,7 +62,7 @@ const EditPet = () => {
     const getShelters = async () => {
       try {
         const response = await getAllShelters();
-        setShelters(response.data);
+        setShelters(response.data as Shelter[]);
       } catch (error) {
         setNotification({
           message: "Failed to fetch shelters.",
@@ -80,8 +80,8 @@ const EditPet = () => {
   useEffect(() => {
     if (id) {
       getPetById(id).then((response) => {
-        setPet(response.data);
-        setNewPet(response.data);
+        setPet(response.data as Pet);
+        setNewPet(response.data as Pet);
       });
     }
   }, [id]);

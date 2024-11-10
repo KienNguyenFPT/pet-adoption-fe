@@ -41,7 +41,7 @@ const AddAdoption = () => {
     userId: "",
     petId: "",
     petName: "",
-    petImages: "",
+    petImages: [],
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -75,14 +75,13 @@ const AddAdoption = () => {
             type: "error",
           });
         }
+        const ad: Adoption = response.data as Adoption;
         setNewAdoption({
-          ...response.data,
-          applicationDate: moment(
-            new Date(response.data?.applicationDate)
-          ).format("YYYY-MM-DD"),
-          approvalDate: moment(new Date(response.data?.approvalDate)).format(
+          ...ad,
+          applicationDate: moment(new Date(ad?.applicationDate)).format(
             "YYYY-MM-DD"
           ),
+          approvalDate: moment(new Date(ad?.approvalDate)).format("YYYY-MM-DD"),
         });
       });
     }
@@ -91,7 +90,7 @@ const AddAdoption = () => {
     const getPets = async () => {
       try {
         const response = await getAllPets();
-        setPets(response.data);
+        setPets(response.data as Pet[]);
       } catch (error) {
         setNotification({
           message: "Failed to fetching pets.",

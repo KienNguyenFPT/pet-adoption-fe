@@ -41,7 +41,7 @@ const AddHealth = () => {
     const getPets = async () => {
       try {
         const response = await getAllPets();
-        setPet(response.data);
+        setPet(response.data as Pet[]);
       } catch (error) {
         console.error("Error fetching pets:", error);
       }

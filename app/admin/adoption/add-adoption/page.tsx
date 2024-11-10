@@ -35,7 +35,7 @@ const AddAdoption = () => {
     userId: "",
     petId: "",
     petName: "",
-    petImages: "",
+    petImages: [],
   });
   const [pets, setPets] = useState<Pet[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -61,7 +61,7 @@ const AddAdoption = () => {
     const getPets = async () => {
       try {
         const response = await getAllPets();
-        setPets(response.data);
+        setPets(response.data as Pet[]);
       } catch (error) {
         console.error("Error fetching pets:", error);
       }
