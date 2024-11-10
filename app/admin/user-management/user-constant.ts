@@ -1,5 +1,3 @@
-import moment from "moment";
-
 export const TableUserColumns = [
   {
     name: "id",
@@ -19,7 +17,7 @@ export const TableUserColumns = [
   },
   {
     name: "fullName",
-    label: "fullName",
+    label: "Full Name",
     options: {
       filter: true,
       sort: true,

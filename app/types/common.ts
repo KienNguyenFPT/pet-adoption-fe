@@ -1,5 +1,5 @@
 export interface Image {
   id: string | null | undefined;
-  image: string | null;
-  imageUrl: string | null;
+  image: string | null | undefined;
+  imageUrl: string | undefined;
 }

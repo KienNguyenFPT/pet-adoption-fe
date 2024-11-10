@@ -6,7 +6,6 @@ import { Box, Button, Grid, TextField, Typography } from "@mui/material";
 import Layout from "@/app/components/Layout";
 import { addShelter } from "@/app/services/shelterService";
 import { Shelter } from "@/app/types/shelter";
-import { getAllShelters } from "@/app/services/shelterService";
 import { Alert } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 
@@ -33,23 +32,11 @@ const AddShelter = () => {
     currentCapacity: 0,
     limitedCapacity: 0,
   });
-  const [shelters, setShelters] = useState<Shelter[]>([]);
   const [notification, setNotification] = useState<{
     message: string;
     type: "success" | "error";
   } | null>(null);
 
-  useEffect(() => {
-    const getShelters = async () => {
-      try {
-        const response = await getAllShelters();
-        setShelters(response.data);
-      } catch (error) {
-        console.error("Error fetching shelters:", error);
-      }
-    };
-    getShelters();
-  }, []);
   const handleAddShelter = async () => {
     try {
       if (
