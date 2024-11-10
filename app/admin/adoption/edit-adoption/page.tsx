@@ -147,7 +147,7 @@ const AddAdoption = () => {
   };
 
   return (
-    <Suspense>
+    <Suspense  fallback={<div>Loading...</div>}>
       <Layout>
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
           Edit Adoption Form
