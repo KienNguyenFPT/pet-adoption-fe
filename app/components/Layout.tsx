@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { Suspense } from 'react'
 import { useRouter } from "next/navigation";
 import {
   AppBar,
@@ -236,7 +237,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </List>
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, pt: 3, overflowX: "auto" }}>
-          {children}
+          <Suspense>
+            {children}
+          </Suspense>
         </Box>
       </Box>
     </Box>
