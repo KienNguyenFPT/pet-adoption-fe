@@ -21,15 +21,6 @@ import { Alert } from "@mui/material";
 const UserManagement = () => {
   const router = useRouter();
   const [role, setRole] = useState<string | null>(null);
-  useEffect(() => {
-    const storedRole = localStorage.getItem("role");
-    console.log({ storedRole });
-
-    if (storedRole) {
-      setRole(role);
-    }
-  }, []);
-
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [notification, setNotification] = useState<{
@@ -37,7 +28,7 @@ const UserManagement = () => {
     type: "success" | "error";
   } | null>(null);
   const [user, setUser] = useState<User>({
-    id: localStorage.getItem("userId") || "",
+    id: "",
     emailAddress: "",
     fullName: "",
     phoneNumber: "",
@@ -52,18 +43,22 @@ const UserManagement = () => {
   });
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
+
     if (!accessToken) {
       router.push("/admin/login");
     } else {
+      setRole(localStorage.getItem("role"));
       setIsAuthenticated(true);
+      user.id = localStorage.getItem("userId") || "";
+      user.role = role ? +role : -1;
     }
     setIsLoading(false);
-  }, [router]);
+  }, [router, role, user]);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await getUserById(localStorage.getItem("userId") || "");
+        const res = await getUserById(user.id);
         console.log(res);
 
         if (res && res.success) {
