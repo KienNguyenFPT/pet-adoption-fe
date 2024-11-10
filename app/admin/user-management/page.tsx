@@ -14,7 +14,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import { TableUserColumns } from "./user-constant";
 import { Alert } from "@mui/material";
-import moment from "moment";
+
 const UserManagement = () => {
   const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
@@ -87,7 +87,18 @@ const UserManagement = () => {
     );
   }
   if (!isAuthenticated) {
-    return null;
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
   }
   const columns = [
     ...TableUserColumns,
@@ -136,13 +147,6 @@ const UserManagement = () => {
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
           User Management
         </Typography>
-        <Button
-          sx={{ mr: 2 }}
-          variant="contained"
-          onClick={() => router.push("/admin/user-management/add-user")}
-        >
-          Add New User
-        </Button>
       </Box>
       <div>
         {notification && (

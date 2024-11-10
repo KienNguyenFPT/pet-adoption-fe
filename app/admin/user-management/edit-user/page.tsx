@@ -91,7 +91,18 @@ const EditUser = () => {
     );
   }
   if (!isAuthenticated) {
-    return null;
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
   }
   return (
     <Layout>
