@@ -27,7 +27,7 @@ const Login = () => {
     try {
       const isAdmin = role === "Admin" ? true : false;
       const isStaff = role === "Staff" ? true : false;
-      const data = await handleRegister(
+      await handleRegister(
         isAdmin,
         isStaff,
         email,
