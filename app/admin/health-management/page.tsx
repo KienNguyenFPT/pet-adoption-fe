@@ -16,6 +16,7 @@ const HealthManagement = () => {
   const router = useRouter();
   const [healths, setHealths] = useState<Health[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [role, setRole] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [notification, setNotification] = useState<{
     message: string;
@@ -24,10 +25,8 @@ const HealthManagement = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (
-      !accessToken ||
-      !["Staff", "Administrator"].includes(localStorage.getItem("role") || "")
-    ) {
+    setRole(localStorage.getItem("role") || "");
+    if (!accessToken || !["Staff", "Administrator"].includes(role)) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
@@ -112,9 +111,7 @@ const HealthManagement = () => {
         customBodyRender: (value: string, tableMeta: { rowData: string[] }) => {
           return (
             <>
-              {["Staff", "Administrator"].includes(
-                localStorage.getItem("role") || ""
-              ) && (
+              {["Staff", "Administrator"].includes(role) && (
                 <div style={{ display: "flex", gap: "8px" }}>
                   <IconButton
                     onClick={() => handleEditHealth(tableMeta.rowData[0])}
@@ -150,7 +147,7 @@ const HealthManagement = () => {
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
           Health Management
         </Typography>
-        {["Staff"].includes(localStorage.getItem("role") || "") && (
+        {["Staff"].includes(role) && (
           <Button
             sx={{ mr: 2 }}
             variant="contained"

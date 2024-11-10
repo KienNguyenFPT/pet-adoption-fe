@@ -9,6 +9,7 @@ import { Shelter } from "@/app/types/shelter";
 import { getAllShelters } from "@/app/services/shelterService";
 import { useSearchParams } from "next/navigation";
 import { Alert } from "@mui/material";
+import { Suspense } from "react";
 
 const EditShelter = () => {
   const router = useRouter();
@@ -127,78 +128,80 @@ const EditShelter = () => {
     );
   }
   return (
-    <Layout>
-      <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-        Edit Shelter
-      </Typography>
-      <div style={{ marginBottom: "15px" }}>
-        {notification && (
-          <Alert
-            severity={notification.type}
-            onClose={() => setNotification(null)}
+    <Suspense>
+      <Layout>
+        <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
+          Edit Shelter
+        </Typography>
+        <div style={{ marginBottom: "15px" }}>
+          {notification && (
+            <Alert
+              severity={notification.type}
+              onClose={() => setNotification(null)}
+            >
+              {notification.message}
+            </Alert>
+          )}
+        </div>
+        <Box component="form" sx={{ mb: 2, ml: 2, mr: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <TextField
+                label="Address"
+                value={newShelter.address}
+                onChange={(e) =>
+                  setNewShelter({ ...newShelter, address: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Limited Capacity"
+                value={newShelter.limitedCapacity}
+                onChange={(e) =>
+                  setNewShelter({
+                    ...newShelter,
+                    limitedCapacity: +e.target.value,
+                  })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Current Capacity"
+                value={newShelter.currentCapacity}
+                onChange={(e) =>
+                  setNewShelter({
+                    ...newShelter,
+                    currentCapacity: +e.target.value,
+                  })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Description"
+                value={newShelter.description}
+                onChange={(e) =>
+                  setNewShelter({ ...newShelter, description: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+          </Grid>
+          <Button
+            variant="contained"
+            onClick={handleUpdateShelter}
+            sx={{ mt: 2 }}
           >
-            {notification.message}
-          </Alert>
-        )}
-      </div>
-      <Box component="form" sx={{ mb: 2, ml: 2, mr: 2 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <TextField
-              label="Address"
-              value={newShelter.address}
-              onChange={(e) =>
-                setNewShelter({ ...newShelter, address: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Limited Capacity"
-              value={newShelter.limitedCapacity}
-              onChange={(e) =>
-                setNewShelter({
-                  ...newShelter,
-                  limitedCapacity: +e.target.value,
-                })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Current Capacity"
-              value={newShelter.currentCapacity}
-              onChange={(e) =>
-                setNewShelter({
-                  ...newShelter,
-                  currentCapacity: +e.target.value,
-                })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              label="Description"
-              value={newShelter.description}
-              onChange={(e) =>
-                setNewShelter({ ...newShelter, description: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-        </Grid>
-        <Button
-          variant="contained"
-          onClick={handleUpdateShelter}
-          sx={{ mt: 2 }}
-        >
-          Update
-        </Button>
-      </Box>
-    </Layout>
+            Update
+          </Button>
+        </Box>
+      </Layout>
+    </Suspense>
   );
 };
 

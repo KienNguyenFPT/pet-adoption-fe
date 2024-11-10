@@ -31,6 +31,7 @@ const EventManagement = () => {
   const router = useRouter();
   const [events, setEvents] = useState<Event[]>([]);
   const [images, setImages] = useState<Image[]>([]);
+  const [role, setRole] = useState<string>("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
@@ -43,10 +44,8 @@ const EventManagement = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (
-      !accessToken ||
-      !["Staff", "Administrator"].includes(localStorage.getItem("role") || "")
-    ) {
+    setRole(localStorage.getItem("role") || "");
+    if (!accessToken || !["Staff", "Administrator"].includes(role)) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
@@ -201,9 +200,7 @@ const EventManagement = () => {
                 >
                   <PreviewIcon />
                 </IconButton>
-                {["Staff", "Administrator"].includes(
-                  localStorage.getItem("role") || ""
-                ) && (
+                {["Staff", "Administrator"].includes(role) && (
                   <>
                     <IconButton
                       onClick={() => handleEditEvent(tableMeta.rowData[0])}
@@ -354,7 +351,7 @@ const EventManagement = () => {
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
           Event Management
         </Typography>
-        {["Staff"].includes(localStorage.getItem("role") || "") && (
+        {["Staff"].includes(role) && (
           <Button
             sx={{ mr: 2 }}
             variant="contained"

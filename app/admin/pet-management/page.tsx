@@ -35,9 +35,11 @@ const PetManagement = () => {
     message: string;
     type: "success" | "error";
   } | null>(null);
+  const [role, setRole] = useState<string>("");
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
+    setRole(localStorage.getItem("role") || "");
     if (!accessToken) {
       router.push("/admin/login");
     } else {
@@ -145,9 +147,7 @@ const PetManagement = () => {
                     <PreviewIcon />
                   </IconButton>
                 </Tooltip>
-                {["User", "Staff"].includes(
-                  localStorage.getItem("role") || ""
-                ) && (
+                {["User", "Staff"].includes(role) && (
                   <Tooltip title="View Adoption">
                     <IconButton
                       onClick={() => handleViewAdoption(tableMeta.rowData[0])}
@@ -157,9 +157,7 @@ const PetManagement = () => {
                     </IconButton>
                   </Tooltip>
                 )}
-                {["Administrator", "Staff"].includes(
-                  localStorage.getItem("role") || ""
-                ) && (
+                {["Administrator", "Staff"].includes(role) && (
                   <>
                     <Tooltip title="Edit">
                       <IconButton
@@ -298,9 +296,7 @@ const PetManagement = () => {
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
           All Pet Information
         </Typography>
-        {["Administrator", "Staff"].includes(
-          localStorage.getItem("role") || ""
-        ) && (
+        {["Administrator", "Staff"].includes(role) && (
           <Button
             sx={{ mr: 2 }}
             variant="contained"

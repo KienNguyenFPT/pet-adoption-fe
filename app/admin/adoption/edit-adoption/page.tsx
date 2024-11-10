@@ -105,6 +105,36 @@ const EditAdoption = () => {
 
     getPets();
   }, []);
+
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
+  }
+
   const handleUpdateAdoption = async () => {
     try {
       await updateAdoption(newAdoption);
@@ -117,40 +147,9 @@ const EditAdoption = () => {
       console.error("Error editing adoption:", error);
     }
   };
-  if (isLoading) {
-    return (
-      <Suspense>
-        <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          Loading...
-        </div>
-      </Suspense>
-    );
-  }
-  if (!isAuthenticated) {
-    return (
-      <Suspense>
-        <div
-          style={{
-            minHeight: "100vh",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          You do not have permissions to view this page.
-        </div>
-      </Suspense>
-    );
-  }
+
   return (
-    <Suspense>
+    <Suspense fallback={<div>Loading...</div>}>
       <Layout>
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
           Edit Adoption Form

@@ -21,6 +21,7 @@ import { getAllPets } from "@/app/services/petService";
 import { useSearchParams } from "next/navigation";
 import moment from "moment";
 import { Pet } from "@/app/types/pet";
+import { Suspense } from "react";
 
 const AddHealth = () => {
   const router = useRouter();
@@ -74,86 +75,94 @@ const AddHealth = () => {
   };
 
   return (
-    <Layout>
-      <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-        Edit Health
-      </Typography>
-      <div>
-        {notification && (
-          <Alert
-            severity={notification.type}
-            onClose={() => setNotification(null)}
-          >
-            {notification.message}
-          </Alert>
-        )}
-      </div>
-      <Box component="form" sx={{ m: 2 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <TextField
-              label="Description"
-              value={newHealth.shortDescription}
-              onChange={(e) =>
-                setNewHealth({ ...newHealth, shortDescription: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Date"
-              value={newHealth.date}
-              onChange={(e) =>
-                setNewHealth({ ...newHealth, date: e.target.value })
-              }
-              fullWidth
-              placeholder="YYYY-MM-DD"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth>
-              <InputLabel id="gender-id-label">Select Vaccine</InputLabel>
-              <Select
-                labelId="gender-id-label"
-                value={newHealth.vaccineStatus}
+    <Suspense>
+      <Layout>
+        <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
+          Edit Health
+        </Typography>
+        <div>
+          {notification && (
+            <Alert
+              severity={notification.type}
+              onClose={() => setNotification(null)}
+            >
+              {notification.message}
+            </Alert>
+          )}
+        </div>
+        <Box component="form" sx={{ m: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <TextField
+                label="Description"
+                value={newHealth.shortDescription}
                 onChange={(e) =>
-                  setNewHealth({ ...newHealth, vaccineStatus: +e.target.value })
+                  setNewHealth({
+                    ...newHealth,
+                    shortDescription: e.target.value,
+                  })
                 }
-              >
-                <MenuItem key="false" value="0">
-                  Have not been vaccinated
-                </MenuItem>
-                <MenuItem key="true" value="1" selected>
-                  Have been vaccinated
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth>
-              <InputLabel id="pet-id-label">Select Pet</InputLabel>
-              <Select
-                labelId="pet-id-label"
-                value={newHealth.petId}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Date"
+                value={newHealth.date}
                 onChange={(e) =>
-                  setNewHealth({ ...newHealth, petId: e.target.value })
+                  setNewHealth({ ...newHealth, date: e.target.value })
                 }
-              >
-                {pets.map((pet) => (
-                  <MenuItem key={pet.id} value={pet.id}>
-                    {pet.petName}
+                fullWidth
+                placeholder="YYYY-MM-DD"
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl fullWidth>
+                <InputLabel id="gender-id-label">Select Vaccine</InputLabel>
+                <Select
+                  labelId="gender-id-label"
+                  value={newHealth.vaccineStatus}
+                  onChange={(e) =>
+                    setNewHealth({
+                      ...newHealth,
+                      vaccineStatus: +e.target.value,
+                    })
+                  }
+                >
+                  <MenuItem key="false" value="0">
+                    Have not been vaccinated
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                  <MenuItem key="true" value="1" selected>
+                    Have been vaccinated
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl fullWidth>
+                <InputLabel id="pet-id-label">Select Pet</InputLabel>
+                <Select
+                  labelId="pet-id-label"
+                  value={newHealth.petId}
+                  onChange={(e) =>
+                    setNewHealth({ ...newHealth, petId: e.target.value })
+                  }
+                >
+                  {pets.map((pet) => (
+                    <MenuItem key={pet.id} value={pet.id}>
+                      {pet.petName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
           </Grid>
-        </Grid>
-        <Button variant="contained" onClick={handleAddHealth} sx={{ mt: 2 }}>
-          Update Health
-        </Button>
-      </Box>
-    </Layout>
+          <Button variant="contained" onClick={handleAddHealth} sx={{ mt: 2 }}>
+            Update Health
+          </Button>
+        </Box>
+      </Layout>
+    </Suspense>
   );
 };
 

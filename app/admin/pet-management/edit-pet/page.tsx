@@ -23,6 +23,7 @@ import { useSearchParams } from "next/navigation";
 import { Alert } from "@mui/material";
 import { addImage } from "@/app/services/petService"; // Ensure this import is correct
 import { Modal, CircularProgress } from "@mui/material";
+import { Suspense } from "react";
 
 const EditPet = () => {
   const router = useRouter();
@@ -146,135 +147,139 @@ const EditPet = () => {
     );
   }
   return (
-    <Layout>
-      <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-        Edit Pet <b> {newPet.petName}</b>
-      </Typography>
-      <Modal
-        open={isLoading}
-        aria-labelledby="loading-modal"
-        aria-describedby="loading-indicator"
-      >
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="100vh"
+    <Suspense>
+      <Layout>
+        <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
+          Edit Pet <b> {newPet.petName}</b>
+        </Typography>
+        <Modal
+          open={isLoading}
+          aria-labelledby="loading-modal"
+          aria-describedby="loading-indicator"
         >
-          <CircularProgress />
-        </Box>
-      </Modal>
-      <div style={{ marginBottom: "15px" }}>
-        {notification && (
-          <Alert
-            severity={notification.type}
-            onClose={() => setNotification(null)}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100vh"
           >
-            {notification.message}
-          </Alert>
-        )}
-      </div>
-      <Box component="form" sx={{ mb: 2, ml: 2, mr: 2 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <TextField
-              label="Pet Name"
-              value={newPet.petName}
-              onChange={(e) =>
-                setNewPet({ ...newPet, petName: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Breed"
-              value={newPet.breed}
-              onChange={(e) => setNewPet({ ...newPet, breed: e.target.value })}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Age"
-              value={newPet.age}
-              onChange={(e) => setNewPet({ ...newPet, age: e.target.value })}
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth>
-              <InputLabel id="gender-id-label">Gender</InputLabel>
-              <Select
-                labelId="gender-id-label"
-                value={newPet.gender}
+            <CircularProgress />
+          </Box>
+        </Modal>
+        <div style={{ marginBottom: "15px" }}>
+          {notification && (
+            <Alert
+              severity={notification.type}
+              onClose={() => setNotification(null)}
+            >
+              {notification.message}
+            </Alert>
+          )}
+        </div>
+        <Box component="form" sx={{ mb: 2, ml: 2, mr: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <TextField
+                label="Pet Name"
+                value={newPet.petName}
                 onChange={(e) =>
-                  setNewPet({ ...newPet, gender: e.target.value })
+                  setNewPet({ ...newPet, petName: e.target.value })
                 }
-              >
-                <MenuItem key="Male" value="Male">
-                  Male
-                </MenuItem>
-                <MenuItem key="Female" value="Female">
-                  Female
-                </MenuItem>
-                <MenuItem key="Other" value="Other">
-                  Other
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={8}>
-            <TextField
-              label="Description"
-              value={newPet.description}
-              onChange={(e) =>
-                setNewPet({ ...newPet, description: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Rescued Date"
-              value={
-                newPet.rescuedDate
-                  ? moment(new Date(newPet.rescuedDate)).format("YYYY-MM-DD")
-                  : ""
-              }
-              onChange={(e) =>
-                setNewPet({ ...newPet, rescuedDate: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth>
-              <InputLabel id="shelter-id-label">Shelter Address</InputLabel>
-              <Select
-                labelId="shelter-id-label"
-                value={newPet.shelterId}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Breed"
+                value={newPet.breed}
                 onChange={(e) =>
-                  setNewPet({ ...newPet, shelterId: e.target.value })
+                  setNewPet({ ...newPet, breed: e.target.value })
                 }
-              >
-                {shelters.map((shelter: Shelter) => (
-                  <MenuItem key={shelter.id} value={shelter.id}>
-                    {shelter.address}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Age"
+                value={newPet.age}
+                onChange={(e) => setNewPet({ ...newPet, age: e.target.value })}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl fullWidth>
+                <InputLabel id="gender-id-label">Gender</InputLabel>
+                <Select
+                  labelId="gender-id-label"
+                  value={newPet.gender}
+                  onChange={(e) =>
+                    setNewPet({ ...newPet, gender: e.target.value })
+                  }
+                >
+                  <MenuItem key="Male" value="Male">
+                    Male
                   </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+                  <MenuItem key="Female" value="Female">
+                    Female
+                  </MenuItem>
+                  <MenuItem key="Other" value="Other">
+                    Other
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={8}>
+              <TextField
+                label="Description"
+                value={newPet.description}
+                onChange={(e) =>
+                  setNewPet({ ...newPet, description: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Rescued Date"
+                value={
+                  newPet.rescuedDate
+                    ? moment(new Date(newPet.rescuedDate)).format("YYYY-MM-DD")
+                    : ""
+                }
+                onChange={(e) =>
+                  setNewPet({ ...newPet, rescuedDate: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl fullWidth>
+                <InputLabel id="shelter-id-label">Shelter Address</InputLabel>
+                <Select
+                  labelId="shelter-id-label"
+                  value={newPet.shelterId}
+                  onChange={(e) =>
+                    setNewPet({ ...newPet, shelterId: e.target.value })
+                  }
+                >
+                  {shelters.map((shelter: Shelter) => (
+                    <MenuItem key={shelter.id} value={shelter.id}>
+                      {shelter.address}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={4}>
+              <input type="file" accept="image/*" onChange={handleFileChange} />
+            </Grid>
           </Grid>
-          <Grid item xs={4}>
-            <input type="file" accept="image/*" onChange={handleFileChange} />
-          </Grid>
-        </Grid>
-        <Button variant="contained" onClick={handleUpdatePet} sx={{ mt: 2 }}>
-          Update
-        </Button>
-      </Box>
-    </Layout>
+          <Button variant="contained" onClick={handleUpdatePet} sx={{ mt: 2 }}>
+            Update
+          </Button>
+        </Box>
+      </Layout>
+    </Suspense>
   );
 };
 

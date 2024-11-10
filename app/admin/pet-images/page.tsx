@@ -25,6 +25,7 @@ const PetImages = () => {
   const [images, setimages] = useState<Image[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [role, setRole] = useState<string>("");
   const [page, setPage] = useState(0);
   const [notification, setNotification] = useState<{
     message: string;
@@ -33,10 +34,8 @@ const PetImages = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (
-      !accessToken ||
-      !["Staff", "Administrator"].includes(localStorage.getItem("role") || "")
-    ) {
+    setRole(localStorage.getItem("role") || "");
+    if (!accessToken || !["Staff", "Administrator"].includes(role)) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
@@ -162,9 +161,7 @@ const PetImages = () => {
                         style={{ width: "200px", height: "auto" }}
                       />
                     </TableCell>
-                    {["Administrator", "Staff"].includes(
-                      localStorage.getItem("role") || ""
-                    ) && (
+                    {["Administrator", "Staff"].includes(role) && (
                       <TableCell>
                         <IconButton
                           onClick={() => handleDeleteImage(img.id || "")}

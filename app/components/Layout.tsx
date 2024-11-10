@@ -1,6 +1,6 @@
 "use client";
+import { Suspense } from "react";
 import React, { useEffect, useState } from "react";
-import { Suspense } from 'react'
 import { useRouter } from "next/navigation";
 import {
   AppBar,
@@ -19,11 +19,14 @@ import styles from "./styles.module.css";
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
   const [username, setUsername] = useState<string | null>(null);
+  const [role, setRole] = useState<string>("");
 
   useEffect(() => {
     const storedUsername = localStorage.getItem("username");
-    if (storedUsername) {
+    const storedURole = localStorage.getItem("role") || "";
+    if (storedUsername && storedURole) {
       setUsername(storedUsername);
+      setRole(storedURole);
     }
   }, []);
 
@@ -47,7 +50,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           {username && (
             <>
               <Typography variant="body1" sx={{ marginRight: 2 }}>
-                Welcome {localStorage.getItem("role")}, {username}
+                Welcome {role}, {username}
               </Typography>
             </>
           )}
@@ -76,9 +79,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <img src="/images/logo.png" alt="Logo" width={100} height={100} />
           </Box>
           <List>
-            {["Staff", "Administrator", "User"].includes(
-              localStorage.getItem("role") || ""
-            ) && (
+            {["Staff", "Administrator", "User"].includes(role) && (
               <ListItem
                 className={styles.listItemButton}
                 component="button"
@@ -90,9 +91,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <ListItemText primary="Pets Management" />
               </ListItem>
             )}
-            {["Staff", "Administrator"].includes(
-              localStorage.getItem("role") || ""
-            ) && (
+            {["Staff", "Administrator"].includes(role) && (
               <ListItem
                 className={styles.listItemButton}
                 component="button"
@@ -109,9 +108,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <ListItemText primary="Pet's Photos" />
               </ListItem>
             )}
-            {["Staff", "Administrator"].includes(
-              localStorage.getItem("role") || ""
-            ) && (
+            {["Staff", "Administrator"].includes(role) && (
               <ListItem
                 className={styles.listItemButton}
                 component="button"
@@ -128,7 +125,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <ListItemText primary="Pet's Heath" />
               </ListItem>
             )}
-            {["User", "Staff"].includes(localStorage.getItem("role") || "") && (
+            {["User", "Staff"].includes(role) && (
               <ListItem
                 className={styles.listItemButton}
                 component="button"
@@ -160,7 +157,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </ListItemIcon>
               <ListItemText primary="Shelter" />
             </ListItem>
-            {["User"].includes(localStorage.getItem("role") || "") && (
+            {/* {["User"].includes(role) && (
               <ListItem
                 className={styles.listItemButton}
                 component="button"
@@ -176,10 +173,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 </ListItemIcon>
                 <ListItemText primary="Donation" />
               </ListItem>
-            )}
-            {["Staff", "Administrator"].includes(
-              localStorage.getItem("role") || ""
-            ) && (
+            )} */}
+            {["Staff", "Administrator"].includes(role) && (
               <ListItem
                 className={styles.listItemButton}
                 component="button"
@@ -196,7 +191,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <ListItemText primary="Event Management" />
               </ListItem>
             )}
-            {localStorage.getItem("role") == "Administrator" && (
+            {role == "Administrator" && (
               <ListItem
                 className={styles.listItemButton}
                 component="button"
@@ -237,9 +232,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </List>
         </Drawer>
         <Box component="main" sx={{ flexGrow: 1, pt: 3, overflowX: "auto" }}>
-          <Suspense>
-            {children}
-          </Suspense>
+          <Suspense>{children}</Suspense>
         </Box>
       </Box>
     </Box>

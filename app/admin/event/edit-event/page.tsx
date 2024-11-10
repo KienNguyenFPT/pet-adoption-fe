@@ -24,6 +24,7 @@ import { useSearchParams } from "next/navigation";
 import { Alert } from "@mui/material";
 import moment from "moment";
 import { Modal, CircularProgress } from "@mui/material";
+import { Suspense } from "react";
 
 const EditEvent = () => {
   const router = useRouter();
@@ -118,126 +119,132 @@ const EditEvent = () => {
   };
 
   return (
-    <Layout>
-      <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-        Edit Event <b> {newEvent.eventName}</b>
-      </Typography>
-      <Modal
-        open={isLoading}
-        aria-labelledby="loading-modal"
-        aria-describedby="loading-indicator"
-      >
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="100vh"
+    <Suspense>
+      <Layout>
+        <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
+          Edit Event <b> {newEvent.eventName}</b>
+        </Typography>
+        <Modal
+          open={isLoading}
+          aria-labelledby="loading-modal"
+          aria-describedby="loading-indicator"
         >
-          <CircularProgress />
-        </Box>
-      </Modal>
-      <div style={{ marginBottom: "15px" }}>
-        {notification && (
-          <Alert
-            severity={notification.type}
-            onClose={() => setNotification(null)}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            height="100vh"
           >
-            {notification.message}
-          </Alert>
-        )}
-      </div>
-      <Box component="form" sx={{ m: 2 }}>
-        <Grid container spacing={2}>
-          <Grid item xs={4}>
-            <TextField
-              label="Name"
-              value={newEvent.eventName}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, eventName: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Type"
-              value={newEvent.eventType}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, eventType: +e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Location"
-              value={newEvent.location}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, location: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <FormControl fullWidth>
-              <InputLabel id="gender-id-label">Status</InputLabel>
-              <Select
-                labelId="gender-id-label"
-                value={newEvent.eventStatus}
+            <CircularProgress />
+          </Box>
+        </Modal>
+        <div style={{ marginBottom: "15px" }}>
+          {notification && (
+            <Alert
+              severity={notification.type}
+              onClose={() => setNotification(null)}
+            >
+              {notification.message}
+            </Alert>
+          )}
+        </div>
+        <Box component="form" sx={{ m: 2 }}>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <TextField
+                label="Name"
+                value={newEvent.eventName}
                 onChange={(e) =>
-                  setNewEvent({ ...newEvent, eventStatus: +e.target.value })
+                  setNewEvent({ ...newEvent, eventName: e.target.value })
                 }
-              >
-                <MenuItem key="Active" value="1" selected>
-                  Active
-                </MenuItem>
-                <MenuItem key="Inactive" value="0">
-                  Inactive
-                </MenuItem>
-              </Select>
-            </FormControl>
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Type"
+                value={newEvent.eventType}
+                onChange={(e) =>
+                  setNewEvent({ ...newEvent, eventType: +e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Location"
+                value={newEvent.location}
+                onChange={(e) =>
+                  setNewEvent({ ...newEvent, location: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl fullWidth>
+                <InputLabel id="gender-id-label">Status</InputLabel>
+                <Select
+                  labelId="gender-id-label"
+                  value={newEvent.eventStatus}
+                  onChange={(e) =>
+                    setNewEvent({ ...newEvent, eventStatus: +e.target.value })
+                  }
+                >
+                  <MenuItem key="Active" value="1" selected>
+                    Active
+                  </MenuItem>
+                  <MenuItem key="Inactive" value="0">
+                    Inactive
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={8}>
+              <TextField
+                label="Description"
+                value={newEvent.description}
+                onChange={(e) =>
+                  setNewEvent({ ...newEvent, description: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Start Date"
+                value={newEvent.startDate}
+                onChange={(e) =>
+                  setNewEvent({ ...newEvent, startDate: e.target.value })
+                }
+                fullWidth
+                placeholder="YYYY-MM-DD"
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="End Date"
+                value={newEvent.endDate}
+                onChange={(e) =>
+                  setNewEvent({ ...newEvent, endDate: e.target.value })
+                }
+                fullWidth
+                placeholder="YYYY-MM-DD"
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <input type="file" accept="image/*" onChange={handleFileChange} />
+            </Grid>
           </Grid>
-          <Grid item xs={8}>
-            <TextField
-              label="Description"
-              value={newEvent.description}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, description: e.target.value })
-              }
-              fullWidth
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="Start Date"
-              value={newEvent.startDate}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, startDate: e.target.value })
-              }
-              fullWidth
-              placeholder="YYYY-MM-DD"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <TextField
-              label="End Date"
-              value={newEvent.endDate}
-              onChange={(e) =>
-                setNewEvent({ ...newEvent, endDate: e.target.value })
-              }
-              fullWidth
-              placeholder="YYYY-MM-DD"
-            />
-          </Grid>
-          <Grid item xs={4}>
-            <input type="file" accept="image/*" onChange={handleFileChange} />
-          </Grid>
-        </Grid>
-        <Button variant="contained" onClick={handleUpdateEvent} sx={{ mt: 2 }}>
-          Update Event
-        </Button>
-      </Box>
-    </Layout>
+          <Button
+            variant="contained"
+            onClick={handleUpdateEvent}
+            sx={{ mt: 2 }}
+          >
+            Update Event
+          </Button>
+        </Box>
+      </Layout>
+    </Suspense>
   );
 };
 

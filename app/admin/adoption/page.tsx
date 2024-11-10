@@ -24,6 +24,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import moment from "moment";
 import { Image } from "@/app/types/common";
 import * as _ from "lodash";
@@ -31,6 +32,7 @@ import * as _ from "lodash";
 const AdoptionManagement = () => {
   const router = useRouter();
   const [adoptions, setAdoptions] = useState<Adoption[]>([]);
+  const [role, setRole] = useState<string>("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
@@ -44,10 +46,8 @@ const AdoptionManagement = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    if (
-      !accessToken ||
-      !["User", "Staff"].includes(localStorage.getItem("role") || "")
-    ) {
+    setRole(localStorage.getItem("role") || "");
+    if (!accessToken || !["User", "Staff"].includes(role)) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
@@ -155,16 +155,18 @@ const AdoptionManagement = () => {
 
   if (isLoading) {
     return (
-      <div
-        style={{
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        Loading...
-      </div>
+      <Suspense>
+        <div
+          style={{
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          Loading...
+        </div>
+      </Suspense>
     );
   }
   const columns = [
@@ -185,7 +187,7 @@ const AdoptionManagement = () => {
                 >
                   <PreviewIcon />
                 </IconButton>
-                {["Staff"].includes(localStorage.getItem("role") || "") && (
+                {["Staff"].includes(role) && (
                   <>
                     <IconButton
                       onClick={() => handleEditAdoption(tableMeta.rowData[0])}
@@ -326,59 +328,61 @@ const AdoptionManagement = () => {
     );
   }
   return (
-    <Layout>
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          mb: 2,
-        }}
-      >
-        <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-          Adoption Management
-        </Typography>
-        {["User"].includes(localStorage.getItem("role") || "") && (
-          <Button
-            sx={{ mr: 2 }}
-            variant="contained"
-            onClick={() => router.push("/admin/adoption/add-adoption")}
-          >
-            Add New Adoption
-          </Button>
-        )}
-      </Box>
-      <div>
-        {notification && (
-          <Alert
-            severity={notification.type}
-            onClose={() => setNotification(null)}
-          >
-            {notification.message}
-          </Alert>
-        )}
-      </div>
-      <Box sx={{ mt: 2 }}>
-        <MUIDataTable
-          title={""}
-          data={adoptions}
-          columns={columns}
-          options={{
-            download: false,
-            responsive: "vertical",
-            pagination: true,
-            onRowClick: (rowData) => {
-              console.log("Row clicked:", rowData);
-            },
-            print: false,
-            fixedHeader: true,
-            selectableRows: "none",
-            rowsPerPage: 5,
-            rowsPerPageOptions: [5, 10, 20, 50, 100],
+    <Suspense>
+      <Layout>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 2,
           }}
-        />
-      </Box>
-    </Layout>
+        >
+          <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
+            Adoption Management
+          </Typography>
+          {["User"].includes(role) && (
+            <Button
+              sx={{ mr: 2 }}
+              variant="contained"
+              onClick={() => router.push("/admin/adoption/add-adoption")}
+            >
+              Add New Adoption
+            </Button>
+          )}
+        </Box>
+        <div>
+          {notification && (
+            <Alert
+              severity={notification.type}
+              onClose={() => setNotification(null)}
+            >
+              {notification.message}
+            </Alert>
+          )}
+        </div>
+        <Box sx={{ mt: 2 }}>
+          <MUIDataTable
+            title={""}
+            data={adoptions}
+            columns={columns}
+            options={{
+              download: false,
+              responsive: "vertical",
+              pagination: true,
+              onRowClick: (rowData) => {
+                console.log("Row clicked:", rowData);
+              },
+              print: false,
+              fixedHeader: true,
+              selectableRows: "none",
+              rowsPerPage: 5,
+              rowsPerPageOptions: [5, 10, 20, 50, 100],
+            }}
+          />
+        </Box>
+      </Layout>
+    </Suspense>
   );
 };
 
