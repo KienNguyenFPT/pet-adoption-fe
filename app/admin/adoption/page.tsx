@@ -46,10 +46,13 @@ const AdoptionManagement = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    setRole(localStorage.getItem("role") || "");
-    if (!accessToken || !["User", "Staff"].includes(role)) {
+    if (
+      !accessToken ||
+      !["User", "Staff"].includes(localStorage.getItem("role") as string)
+    ) {
       router.push("/admin/login");
     } else {
+      setRole(localStorage.getItem("role") || "");
       setIsAuthenticated(true);
     }
     setIsLoading(false);

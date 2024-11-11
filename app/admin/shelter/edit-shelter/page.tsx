@@ -19,7 +19,7 @@ const EditShelter = () => {
     const accessToken = localStorage.getItem("accessToken");
     if (
       !accessToken ||
-      !["Staff"].includes(localStorage.getItem("role") || "")
+      !["Staff"].includes(localStorage.getItem("role") as string)
     ) {
       router.push("/admin/login");
     } else {

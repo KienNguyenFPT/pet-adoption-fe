@@ -45,7 +45,12 @@ const EventManagement = () => {
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     setRole(localStorage.getItem("role") || "");
-    if (!accessToken || !["Staff", "Administrator"].includes(role)) {
+    if (
+      !accessToken ||
+      !["Staff", "Administrator"].includes(
+        localStorage.getItem("role") as string
+      )
+    ) {
       router.push("/admin/login");
     } else {
       setIsAuthenticated(true);
@@ -84,7 +89,7 @@ const EventManagement = () => {
     if (event) {
       try {
         const res = await getAllEventImages(id);
-        console.log(res);
+        // console.log(res);
 
         if (res && res.success) {
           setImages(res.data as Image[]);
@@ -189,7 +194,6 @@ const EventManagement = () => {
         filter: false,
         sort: false,
         customBodyRender: (value: string, tableMeta: { rowData: string[] }) => {
-          console.log(value);
           return (
             <>
               <div style={{ display: "flex", gap: "8px" }}>

@@ -39,10 +39,10 @@ const PetManagement = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    setRole(localStorage.getItem("role") || "");
     if (!accessToken) {
       router.push("/admin/login");
     } else {
+      setRole(localStorage.getItem("role") || "");
       setIsAuthenticated(true);
     }
     setIsLoading(false);
