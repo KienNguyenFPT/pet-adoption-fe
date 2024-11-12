@@ -147,7 +147,7 @@ const PetManagement = () => {
                     <PreviewIcon />
                   </IconButton>
                 </Tooltip>
-                {["User", "Staff"].includes(role) && (
+                {["Staff"].includes(role) && (
                   <Tooltip title="View Adoption">
                     <IconButton
                       onClick={() => handleViewAdoption(tableMeta.rowData[0])}
