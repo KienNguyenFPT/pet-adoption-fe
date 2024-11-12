@@ -66,6 +66,7 @@ export const TablePetColumns = [
     options: {
       filter: true,
       sort: true,
+      display: false,
     },
   },
   {

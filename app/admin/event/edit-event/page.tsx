@@ -29,6 +29,8 @@ import { Suspense } from "react";
 const EditEvent = () => {
   const router = useRouter();
   const [event, setEvent] = useState<Event | null>(null);
+  const [role, setRole] = useState<string>("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [newEvent, setNewEvent] = useState<Omit<Event, "images">>({
     id: "",
@@ -45,7 +47,23 @@ const EditEvent = () => {
     type: "success" | "error";
   } | null>(null);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (
+      !accessToken ||
+      !["Staff", "Administrator"].includes(
+        localStorage.getItem("role") as string
+      )
+    ) {
+      router.push("/admin/login");
+    } else {
+      setRole(localStorage.getItem("role") || "");
+      console.log(role);
+      setIsAuthenticated(true);
+    }
+    setIsLoading(false);
+  }, [router]);
+
   const searchParams = useSearchParams();
   const id = searchParams.get("id");
 
@@ -117,7 +135,34 @@ const EditEvent = () => {
       }
     }
   };
-
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
+  }
   return (
     <Suspense>
       <Layout>
@@ -190,10 +235,10 @@ const EditEvent = () => {
                     setNewEvent({ ...newEvent, eventStatus: +e.target.value })
                   }
                 >
-                  <MenuItem key="Active" value="1" selected>
+                  <MenuItem key="Active" value="0" selected>
                     Active
                   </MenuItem>
-                  <MenuItem key="Inactive" value="0">
+                  <MenuItem key="Inactive" value="1">
                     Inactive
                   </MenuItem>
                 </Select>

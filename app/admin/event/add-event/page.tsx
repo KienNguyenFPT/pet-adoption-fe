@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import {
   Box,
@@ -21,6 +21,9 @@ import { Alert } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 const AddEvent = () => {
   const router = useRouter();
+  const [role, setRole] = useState<string>("");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [newEvent, setNewEvent] = useState<Omit<Event, "images">>({
     id: uuidv4(),
     eventName: "",
@@ -35,6 +38,24 @@ const AddEvent = () => {
     message: string;
     type: "success" | "error";
   } | null>(null);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (
+      !accessToken ||
+      !["Staff", "Administrator"].includes(
+        localStorage.getItem("role") as string
+      )
+    ) {
+      router.push("/admin/login");
+    } else {
+      setRole(localStorage.getItem("role") || "");
+      console.log(role);
+
+      setIsAuthenticated(true);
+    }
+    setIsLoading(false);
+  }, [router]);
 
   const handleAddEvent = async () => {
     try {
@@ -62,7 +83,34 @@ const AddEvent = () => {
       console.error("Error adding event:", error);
     }
   };
-
+  if (isLoading) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
+  if (!isAuthenticated) {
+    return (
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        You do not have permissions to view this page.
+      </div>
+    );
+  }
   return (
     <Layout>
       <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
@@ -121,10 +169,10 @@ const AddEvent = () => {
                   setNewEvent({ ...newEvent, eventStatus: +e.target.value })
                 }
               >
-                <MenuItem key="Active" value="1" selected>
+                <MenuItem key="Active" value="0" selected>
                   Active
                 </MenuItem>
-                <MenuItem key="Inactive" value="0">
+                <MenuItem key="Inactive" value="1">
                   Inactive
                 </MenuItem>
               </Select>

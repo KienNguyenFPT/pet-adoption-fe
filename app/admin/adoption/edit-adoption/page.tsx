@@ -13,6 +13,7 @@ import {
   Select,
   Typography,
   Alert,
+  TextField,
 } from "@mui/material";
 import Layout from "@/app/components/Layout";
 import {
@@ -184,7 +185,76 @@ const EditAdoption = () => {
                 </Select>
               </FormControl>
             </Grid>
-            {/* Add other form fields here */}
+
+            <Grid item xs={4}>
+              <TextField
+                label="Pet Experience"
+                value={newAdoption.petExperience}
+                onChange={(e) =>
+                  setNewAdoption({
+                    ...newAdoption,
+                    petExperience: e.target.value,
+                  })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Address"
+                value={newAdoption.address}
+                onChange={(e) =>
+                  setNewAdoption({ ...newAdoption, address: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="User Email"
+                value={newAdoption.userEmail}
+                onChange={(e) =>
+                  setNewAdoption({ ...newAdoption, userEmail: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8}>
+              <TextField
+                label="Adoption Reason"
+                value={newAdoption.adoptionReason}
+                onChange={(e) =>
+                  setNewAdoption({
+                    ...newAdoption,
+                    adoptionReason: e.target.value,
+                  })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
+                label="Contact Number"
+                value={newAdoption.contactNumber}
+                onChange={(e) =>
+                  setNewAdoption({
+                    ...newAdoption,
+                    contactNumber: e.target.value,
+                  })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={8}>
+              <TextField
+                label="Notes"
+                value={newAdoption.notes}
+                onChange={(e) =>
+                  setNewAdoption({ ...newAdoption, notes: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
           </Grid>
           <Button
             variant="contained"

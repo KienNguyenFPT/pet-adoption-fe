@@ -15,6 +15,19 @@ export const getAllEvents = async (): Promise<Response> => {
   return response.json();
 };
 
+export const getEventsByUser = async (userId: string): Promise<Response> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Event/GetAllEvents/${userId}`,
+    {
+      method: "GET",
+      headers: {},
+    }
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch events");
+  }
+  return response.json();
+};
 export const addEvent = async (
   event: Omit<Event, "images">
 ): Promise<Event> => {
@@ -151,6 +164,28 @@ export const addEventImage = async (
     throw new Error("Failed to add event image");
   }
   return response.json();
+};
+
+export const userEnrollEvent = async (eventId: string) => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Event/UserEnrollEvent/enroll/${eventId}`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }
+  );
+  if (response.ok) {
+    return response.json();
+  } else {
+    return {
+      success: false,
+      message: response.text(),
+      error: true,
+      errorMessages: "Failed to enroll in event",
+    };
+  }
 };
 
 export const getAllEventImages = async (eventId: string): Promise<Response> => {

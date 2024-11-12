@@ -157,7 +157,11 @@ const ShelterManagement = () => {
         <MUIDataTable
           title={""}
           data={shelters}
-          columns={columns}
+          columns={
+            ["Staff"].includes(localStorage.getItem("role") || "")
+              ? columns
+              : TableShelterColumns
+          }
           options={{
             download: false,
             responsive: "vertical",

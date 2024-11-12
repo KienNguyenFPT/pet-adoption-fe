@@ -9,6 +9,7 @@ import {
   deleteEventImage,
   getAllEventImages,
   getAllEvents,
+  userEnrollEvent,
 } from "../../services/eventService";
 import MUIDataTable from "mui-datatables";
 import { Event } from "../../types/event";
@@ -17,6 +18,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import { TableEventColumns } from "./event-constant";
 import PreviewIcon from "@mui/icons-material/Preview";
+import FestivalIcon from "@mui/icons-material/Festival";
 import { Alert } from "@mui/material";
 import moment from "moment";
 import {
@@ -26,6 +28,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import { Image } from "@/app/types/common";
+import Tooltip from "@mui/material/Tooltip";
 
 const EventManagement = () => {
   const router = useRouter();
@@ -44,21 +47,21 @@ const EventManagement = () => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
-    setRole(localStorage.getItem("role") || "");
     if (
       !accessToken ||
-      !["Staff", "Administrator"].includes(
+      !["Staff", "Administrator", "User"].includes(
         localStorage.getItem("role") as string
       )
     ) {
       router.push("/admin/login");
     } else {
+      setRole(localStorage.getItem("role") || "");
       setIsAuthenticated(true);
     }
     setIsLoading(false);
   }, [router]);
 
-  const fetchEvents = async () => {
+  const fetchAllEvents = async () => {
     try {
       const res = await getAllEvents();
 
@@ -80,7 +83,6 @@ const EventManagement = () => {
       });
     }
   };
-
   const handleEditEvent = (id: string) => {
     router.push(`/admin/event/edit-event?id=${id}`);
   };
@@ -148,13 +150,40 @@ const EventManagement = () => {
       });
     }
   };
-
+  const handleEnrollEvent = async (id: string) => {
+    const event = events.find((event) => event.id === id);
+    if (event) {
+      try {
+        const res = await userEnrollEvent(id);
+        if (res && res.success) {
+          setNotification({
+            message: "Enroll to the event successfully",
+            action: "enroll",
+            type: "success",
+          });
+        } else {
+          setNotification({
+            message: res.message,
+            action: "enroll",
+            type: "error",
+          });
+        }
+      } catch (error) {
+        console.error("Failed to enroll to the event!:", error);
+        setNotification({
+          message: "Failed to enroll to the event!",
+          action: "view",
+          type: "error",
+        });
+      }
+    }
+  };
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setSelectedEvent(null);
   };
   useEffect(() => {
-    fetchEvents();
+    fetchAllEvents();
   }, []);
 
   if (isLoading) {
@@ -197,27 +226,42 @@ const EventManagement = () => {
           return (
             <>
               <div style={{ display: "flex", gap: "8px" }}>
-                {" "}
-                <IconButton
-                  onClick={() => handleViewEvent(tableMeta.rowData[0])}
-                  color="primary"
-                >
-                  <PreviewIcon />
-                </IconButton>
-                {["Staff", "Administrator"].includes(role) && (
-                  <>
+                <Tooltip title="View Full Info">
+                  <IconButton
+                    onClick={() => handleViewEvent(tableMeta.rowData[0])}
+                    color="primary"
+                  >
+                    <PreviewIcon />
+                  </IconButton>
+                </Tooltip>
+                {["User"].includes(role) && (
+                  <Tooltip title="Enroll Event">
                     <IconButton
-                      onClick={() => handleEditEvent(tableMeta.rowData[0])}
+                      onClick={() => handleEnrollEvent(tableMeta.rowData[0])}
                       color="primary"
                     >
-                      <EditIcon />
+                      <FestivalIcon />
                     </IconButton>
-                    <IconButton
-                      onClick={() => handleDeleteEvent(tableMeta.rowData[0])}
-                      color="secondary"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
+                  </Tooltip>
+                )}
+                {["Staff", "Administrator"].includes(role) && (
+                  <>
+                    <Tooltip title="Edit Event">
+                      <IconButton
+                        onClick={() => handleEditEvent(tableMeta.rowData[0])}
+                        color="primary"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete Event">
+                      <IconButton
+                        onClick={() => handleDeleteEvent(tableMeta.rowData[0])}
+                        color="secondary"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
                   </>
                 )}
               </div>
@@ -353,7 +397,7 @@ const EventManagement = () => {
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-          Event Management
+          All Events
         </Typography>
         {["Staff"].includes(role) && (
           <Button
@@ -362,6 +406,15 @@ const EventManagement = () => {
             onClick={() => router.push("/admin/event/add-event")}
           >
             Add New Event
+          </Button>
+        )}
+        {["User"].includes(role) && (
+          <Button
+            sx={{ mr: 2 }}
+            variant="contained"
+            onClick={() => router.push("/admin/event/enrolled-event")}
+          >
+            View Events Enrolled
           </Button>
         )}
       </Box>

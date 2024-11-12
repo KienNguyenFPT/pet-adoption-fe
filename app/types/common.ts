@@ -1,4 +1,5 @@
 import { Adoption } from "./adoption";
+import { Donation } from "./donation";
 import { Event } from "./event";
 import { Health } from "./health";
 import { Pet } from "./pet";
@@ -14,6 +15,7 @@ export interface Image {
 export interface Response {
   data:
     | Adoption
+    | Donation
     | Event
     | Health
     | Pet
@@ -22,6 +24,7 @@ export interface Response {
     | Image
     | Image[]
     | Adoption[]
+    | Donation[]
     | Event[]
     | Health[]
     | Pet[]

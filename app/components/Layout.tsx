@@ -88,7 +88,11 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <ListItemIcon>
                   <img src="/icons/pet.svg" alt="Home" width={24} height={24} />
                 </ListItemIcon>
-                <ListItemText primary="Pets Management" />
+                <ListItemText
+                  primary={
+                    role == "User" ? "Pets Information" : "Pets Management"
+                  }
+                />
               </ListItem>
             )}
             {["Staff", "Administrator"].includes(role) && (
@@ -125,7 +129,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <ListItemText primary="Pet's Heath" />
               </ListItem>
             )}
-            {["User", "Staff"].includes(role) && (
+            {["Staff"].includes(role) && (
               <ListItem
                 className={styles.listItemButton}
                 component="button"
@@ -142,6 +146,58 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <ListItemText primary="Adoption" />
               </ListItem>
             )}
+
+            {["User"].includes(role) && (
+              <ListItem
+                className={styles.listItemButton}
+                component="button"
+                onClick={() => router.push("/admin/my-adoption")}
+              >
+                <ListItemIcon>
+                  <img
+                    src="/icons/account-child.svg"
+                    alt="My Adoption"
+                    width={24}
+                    height={24}
+                  />
+                </ListItemIcon>
+                <ListItemText primary="My Adoption" />
+              </ListItem>
+            )}
+            {["User"].includes(role) && (
+              <ListItem
+                className={styles.listItemButton}
+                component="button"
+                onClick={() => router.push("/admin/my-donation")}
+              >
+                <ListItemIcon>
+                  <img
+                    src="/icons/donate.svg"
+                    alt="My Donation"
+                    width={24}
+                    height={24}
+                  />
+                </ListItemIcon>
+                <ListItemText primary="My Donation" />
+              </ListItem>
+            )}
+            {["Staff"].includes(role) && (
+              <ListItem
+                className={styles.listItemButton}
+                component="button"
+                onClick={() => router.push("/admin/donation")}
+              >
+                <ListItemIcon>
+                  <img
+                    src="/icons/account-child.svg"
+                    alt="Donation"
+                    width={24}
+                    height={24}
+                  />
+                </ListItemIcon>
+                <ListItemText primary="Donation" />
+              </ListItem>
+            )}
             <ListItem
               className={styles.listItemButton}
               component="button"
@@ -149,7 +205,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             >
               <ListItemIcon>
                 <img
-                  src="/icons/shelter.svg"
+                  src="/icons/health_and_safety.svg"
                   alt="Shelter"
                   width={24}
                   height={24}
@@ -174,7 +230,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <ListItemText primary="Donation" />
               </ListItem>
             )} */}
-            {["Staff", "Administrator"].includes(role) && (
+            {["Staff", "Administrator", "User"].includes(role) && (
               <ListItem
                 className={styles.listItemButton}
                 component="button"
@@ -188,7 +244,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     height={24}
                   />
                 </ListItemIcon>
-                <ListItemText primary="Event Management" />
+                <ListItemText
+                  primary={role == "User" ? "Events" : "Events Management"}
+                />
               </ListItem>
             )}
             {role == "Administrator" && (

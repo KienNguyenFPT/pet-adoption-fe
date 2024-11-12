@@ -294,7 +294,7 @@ const PetManagement = () => {
         }}
       >
         <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-          All Pet Information
+          All Pets Information
         </Typography>
         {["Administrator", "Staff"].includes(role) && (
           <Button

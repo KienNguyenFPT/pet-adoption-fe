@@ -7,6 +7,7 @@ export const TableEventColumns = [
     options: {
       filter: true,
       sort: true,
+      display: false,
     },
   },
   {
@@ -23,6 +24,7 @@ export const TableEventColumns = [
     options: {
       filter: true,
       sort: true,
+      display: false,
     },
   },
   {
@@ -40,7 +42,7 @@ export const TableEventColumns = [
       filter: true,
       sort: true,
       customBodyRender: (value: string) => {
-        return value == "1" ? "Active" : "Inactive";
+        return value == "0" ? "Active" : "Inactive";
       },
     },
   },

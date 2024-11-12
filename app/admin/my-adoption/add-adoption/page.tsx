@@ -71,8 +71,12 @@ const AddAdoption = () => {
   }, []);
   const handleAddAdoption = async () => {
     try {
-      await addAdoption(newAdoption);
-      router.push("/admin/adoption");
+      if (!newAdoption.petId) {
+        setNotification({ message: "Please select a pet", type: "error" });
+      } else {
+        await addAdoption(newAdoption);
+        router.push("/admin/my-adoption");
+      }
     } catch (error) {
       setNotification({ message: "Failed to adding adoption.", type: "error" });
       console.error("Error adding adoption:", error);

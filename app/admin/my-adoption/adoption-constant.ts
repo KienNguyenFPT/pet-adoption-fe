@@ -7,6 +7,7 @@ export const TableAdoptionColumns = [
     options: {
       filter: true,
       sort: true,
+      display: false,
     },
   },
   {
@@ -55,6 +56,7 @@ export const TableAdoptionColumns = [
     options: {
       filter: true,
       sort: true,
+      display: false,
     },
   },
   {

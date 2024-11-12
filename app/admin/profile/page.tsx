@@ -50,8 +50,10 @@ const UserManagement = () => {
       setRole(localStorage.getItem("role"));
       setIsAuthenticated(true);
       user.id = localStorage.getItem("userId") || "";
-      user.role = role ? +role : -1;
+      user.role = role == "Admin" ? 0 : role == "Staff" ? 2 : 1;
     }
+    console.log(user);
+
     setIsLoading(false);
   }, [router, role, user]);
 

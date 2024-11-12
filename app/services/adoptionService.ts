@@ -149,3 +149,22 @@ export const deleteAdoption = async (id: string): Promise<void> => {
     throw new Error("Failed to delete adoption");
   }
 };
+
+export const getAdoptionByUserId = async (
+  userId: string
+): Promise<Response> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Adoption/GetAdoptionPetbyUserId/getAdoptionsByUserId/${userId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
+    }
+  );
+  if (!response.ok) {
+    throw new Error("Failed to get adoption by user");
+  }
+  return response.json();
+};

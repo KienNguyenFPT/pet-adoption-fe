@@ -4,15 +4,9 @@ import React, { useState, useEffect } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Layout from "../../components/Layout";
-import {
-  deleteAdoption,
-  getAllAdoptions,
-  getAdoptionByPetId,
-} from "../../services/adoptionService";
+import { getAdoptionByUserId } from "../../services/adoptionService";
 import MUIDataTable from "mui-datatables";
 import { Adoption } from "../../types/adoption";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { IconButton } from "@mui/material";
 import { TableAdoptionColumns } from "./adoption-constant";
 import PreviewIcon from "@mui/icons-material/Preview";
@@ -23,16 +17,15 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import moment from "moment";
 import { Image } from "@/app/types/common";
-import * as _ from "lodash";
 
-const AdoptionManagement = () => {
+const MyAdoption = () => {
   const router = useRouter();
-  const [adoptions, setAdoptions] = useState<Adoption[]>([]);
+  const [adoption, setAdoption] = useState<Adoption[]>([]);
   const [role, setRole] = useState<string>("");
+  const [userId, setUserId] = useState<string>("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
@@ -48,106 +41,44 @@ const AdoptionManagement = () => {
     const accessToken = localStorage.getItem("accessToken");
     if (
       !accessToken ||
-      !["Staff"].includes(localStorage.getItem("role") as string)
+      !["User"].includes(localStorage.getItem("role") as string)
     ) {
       router.push("/admin/login");
     } else {
       setRole(localStorage.getItem("role") || "");
+      setUserId(localStorage.getItem("userId") || "");
       setIsAuthenticated(true);
     }
     setIsLoading(false);
   }, [router]);
 
-  const searchParams = useSearchParams();
-  const petId = searchParams.get("petId");
-
   useEffect(() => {
-    if (petId) {
+    const fetchAdoption = async () => {
       try {
-        getAdoptionByPetId(petId).then((response) => {
-          console.log(response);
-          if (!response || !response.success) {
-            setNotification({
-              message: "Failed to get adoption.",
-              type: "error",
-            });
-          } else if (
-            _.get(response.data, "id") ===
-            "00000000-0000-0000-0000-000000000000"
-          ) {
-            setNotification({
-              message: "Adoption not found.",
-              type: "error",
-            });
-          } else {
-            const ad = response.data as Adoption;
-            setAdoptions([
-              {
-                ...ad,
-                applicationDate: moment(new Date(ad.applicationDate)).format(
-                  "YYYY-MM-DD"
-                ),
-                approvalDate: moment(new Date(ad.approvalDate)).format(
-                  "YYYY-MM-DD"
-                ),
-              },
-            ]);
-          }
-        });
-      } catch (error) {
-        setNotification({
-          message: "Failed to fetch adoption",
-          type: "error",
-        });
-        console.log(error);
-      }
-    } else {
-      const fetchAdoptions = async () => {
-        try {
-          const res = await getAllAdoptions();
-          if (res && res.success) {
-            setAdoptions(res.data as Adoption[]);
-          } else {
-            setNotification({
-              message: "Failed to fetch adoptions",
-              type: "error",
-            });
-          }
-        } catch (error) {
-          console.error("Error fetching adoptions:", error);
+        const res = await getAdoptionByUserId(userId);
+        if (res && res.success) {
+          setAdoption(res.data as Adoption[]);
+        } else {
           setNotification({
-            message: "Failed to fetch adoptions.",
+            message: "Failed to fetch adoption",
             type: "error",
           });
         }
-      };
-      fetchAdoptions();
-    }
-  }, [petId]);
-
-  const handleEditAdoption = (id: string) => {
-    router.push(`/admin/adoption/edit-adoption?id=${id}`);
-  };
-
+      } catch (error) {
+        console.error("Error fetching adoption:", error);
+        setNotification({
+          message: "Failed to fetch adoption.",
+          type: "error",
+        });
+      }
+    };
+    if (userId) fetchAdoption();
+  }, [userId]);
   const handleViewAdoption = (id: string) => {
-    const adoption = adoptions.find((ad) => ad.id === id);
-    if (adoption) {
-      setSelectedAdoption(adoption);
+    const a = adoption.find((ad) => ad.id === id);
+    if (a) {
+      setSelectedAdoption(a);
       setOpenDialog(true);
-    }
-  };
-
-  const handleDeleteAdoption = async (id: string) => {
-    try {
-      await deleteAdoption(id);
-      setAdoptions(adoptions.filter((a) => a.id !== id));
-      setNotification({
-        message: "Adoption deleted successfully!",
-        type: "success",
-      });
-    } catch (error) {
-      console.error("Error deleting adoption:", error);
-      setNotification({ message: "Failed to delete adoption.", type: "error" });
     }
   };
 
@@ -190,22 +121,6 @@ const AdoptionManagement = () => {
                 >
                   <PreviewIcon />
                 </IconButton>
-                {["Staff"].includes(role) && (
-                  <>
-                    <IconButton
-                      onClick={() => handleEditAdoption(tableMeta.rowData[0])}
-                      color="primary"
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      onClick={() => handleDeleteAdoption(tableMeta.rowData[0])}
-                      color="secondary"
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </>
-                )}
               </div>
               <Dialog
                 PaperProps={{
@@ -342,8 +257,17 @@ const AdoptionManagement = () => {
           }}
         >
           <Typography variant="h4" gutterBottom sx={{ ml: 2 }}>
-            Adoption Management
+            My Adoptions
           </Typography>
+          {["User"].includes(role) && (
+            <Button
+              sx={{ mr: 2 }}
+              variant="contained"
+              onClick={() => router.push("/admin/my-adoption/add-adoption")}
+            >
+              Add New Adoption
+            </Button>
+          )}
         </Box>
         <div>
           {notification && (
@@ -358,7 +282,7 @@ const AdoptionManagement = () => {
         <Box sx={{ mt: 2 }}>
           <MUIDataTable
             title={""}
-            data={adoptions}
+            data={adoption}
             columns={columns}
             options={{
               download: false,
@@ -380,4 +304,4 @@ const AdoptionManagement = () => {
   );
 };
 
-export default AdoptionManagement;
+export default MyAdoption;
