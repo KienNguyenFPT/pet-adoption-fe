@@ -76,7 +76,12 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               marginBottom: 2,
             }}
           >
-            <img src="/images/logo.png" alt="Logo" width={100} height={100} />
+            <img
+              src="/images/logo.png"
+              alt="Logo Pet Adoption Admin"
+              width={100}
+              height={100}
+            />
           </Box>
           <List>
             {["Staff", "Administrator", "User"].includes(role) && (
