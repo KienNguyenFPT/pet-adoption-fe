@@ -265,7 +265,7 @@ const MyAdoption = () => {
               variant="contained"
               onClick={() => router.push("/admin/my-adoption/add-adoption")}
             >
-              Add New Adoption
+              Create Adoption
             </Button>
           )}
         </Box>
