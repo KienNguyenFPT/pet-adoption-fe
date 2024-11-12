@@ -17,10 +17,13 @@ export const getAllEvents = async (): Promise<Response> => {
 
 export const getEventsByUser = async (userId: string): Promise<Response> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Event/GetAllEvents/${userId}`,
+    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Event/GetUserThatHasBeenEnrolled/Get/${userId}`,
     {
       method: "GET",
-      headers: {},
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      },
     }
   );
   if (!response.ok) {

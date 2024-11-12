@@ -24,7 +24,7 @@ const Login = () => {
     setError("");
     try {
       const data = await handleLogin(email, password);
-      console.log(data);
+      // console.log(data);
       if (data.success == false) {
         setError(data.message);
       } else {
