@@ -41,7 +41,7 @@ export const createDonation = async (
   donation: Omit<Donation, "id">
 ): Promise<Donation> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Donation/CreatePayment/CreatePayment`,
+    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/Donation/CreatePayment/CreatePayment/${donation.shelterId}`,
     {
       method: "POST",
       headers: {
@@ -51,7 +51,6 @@ export const createDonation = async (
       body: JSON.stringify({
         money: donation.money,
         date: donation.date,
-        shelterId: donation.shelterId,
         // transactionId: uuidv4(),
         // paymentStatus: donation.paymentStatus,
       }),
