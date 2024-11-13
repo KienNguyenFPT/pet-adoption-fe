@@ -31,6 +31,7 @@ const EditShelter = () => {
   const [newShelter, setNewShelter] = useState<Omit<Shelter, "id">>({
     address: "",
     description: "",
+    shelterName: "",
     limitedCapacity: 0,
     currentCapacity: 0,
   });
@@ -157,6 +158,16 @@ const EditShelter = () => {
             </Grid>
             <Grid item xs={4}>
               <TextField
+                label="Shelter Name"
+                value={newShelter.shelterName}
+                onChange={(e) =>
+                  setNewShelter({ ...newShelter, shelterName: e.target.value })
+                }
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={4}>
+              <TextField
                 label="Limited Capacity"
                 value={newShelter.limitedCapacity}
                 onChange={(e) =>
@@ -181,7 +192,7 @@ const EditShelter = () => {
                 fullWidth
               />
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={8}>
               <TextField
                 label="Description"
                 value={newShelter.description}

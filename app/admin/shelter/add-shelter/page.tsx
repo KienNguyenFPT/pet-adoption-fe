@@ -28,6 +28,7 @@ const AddShelter = () => {
   const [newShelter, setNewShelter] = useState<Shelter>({
     id: uuidv4(),
     address: "",
+    shelterName: "",
     description: "",
     currentCapacity: 0,
     limitedCapacity: 0,
@@ -121,6 +122,16 @@ const AddShelter = () => {
           </Grid>
           <Grid item xs={4}>
             <TextField
+              label="Shelter Name"
+              value={newShelter.shelterName}
+              onChange={(e) =>
+                setNewShelter({ ...newShelter, shelterName: e.target.value })
+              }
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <TextField
               label="Limited Capacity"
               value={newShelter.limitedCapacity}
               onChange={(e) =>
@@ -145,7 +156,7 @@ const AddShelter = () => {
               fullWidth
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={8}>
             <TextField
               label="Description"
               value={newShelter.description}

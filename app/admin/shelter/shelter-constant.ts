@@ -16,8 +16,8 @@ export const TableShelterColumns = [
     },
   },
   {
-    name: "name",
-    label: "Name",
+    name: "shelterName",
+    label: "Shelter Name",
     options: {
       filter: true,
       sort: true,
