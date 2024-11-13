@@ -10,6 +10,6 @@ export function middleware(request: NextRequest) {
 }
 export const config = {
   matcher: [
-    "/((?!api|_next/static|_next/image|admin/login|images|admin/register).*)",
+    "/((?!api|_next/static|_next/image|admin/login|images|admin/register|admin/verify-account).*)",
   ],
 };

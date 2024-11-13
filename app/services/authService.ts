@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { TokenDecoded } from "../types/user";
+import { Response } from "../types/common";
 
 export async function handleLogin(emailAddress: string, passwordHash: string) {
   try {
@@ -47,10 +48,10 @@ export async function handleRegister(
 ) {
   try {
     const path = isAdmin
-      ? "/api/Authentication/RegisterAdminAccount"
+      ? "/api/Authentication/RegisterAccountAdminOnAzureDeployment"
       : isStaff
-      ? "/api/Authentication/RegisterStaffAccount"
-      : "/api/Authentication/RegisterAnAccount";
+      ? "/api/Authentication/RegisterAccountStaffOnAzureDeployment"
+      : "/api/Authentication/RegisterAccountUserOnAzureDeployment";
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_GATEWAY}${path}`,
       {
@@ -81,3 +82,23 @@ export async function handleRegister(
     throw new Error("Register failed. Please try again.");
   }
 }
+
+export const verifyUserAccount = async (token: string): Promise<Response> => {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_GATEWAY}/api/User/GetAllUsers/userList/${token}`,
+    {
+      method: "GET",
+      headers: {},
+    }
+  );
+  if (!response.ok) {
+    return {
+      success: false,
+      data: null,
+      message: "Fail to verify account",
+      error: true,
+      errorMessages: "Failed",
+    };
+  }
+  return response.json();
+};
