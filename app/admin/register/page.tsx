@@ -18,12 +18,12 @@ import { handleRegister } from "../../services/authService";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("Admin");
+  const [role, setRole] = useState("User");
   const [fullname, setFullname] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
-  const onLogin = async () => {
+  const onRegister = async () => {
     try {
       const isAdmin = role === "Admin" ? true : false;
       const isStaff = role === "Staff" ? true : false;
@@ -125,9 +125,9 @@ const Login = () => {
               onChange={(e) => setRole(e.target.value)}
               label="Role"
             >
-              <MenuItem value="Admin">Admin</MenuItem>
-              <MenuItem value="Staff">Staff</MenuItem>
               <MenuItem value="User">User</MenuItem>
+              <MenuItem value="Staff">Staff</MenuItem>
+              <MenuItem value="Admin">Admin</MenuItem>
             </Select>
           </FormControl>
           {error && <Typography color="error">{error}</Typography>}
@@ -135,7 +135,7 @@ const Login = () => {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
-            onClick={onLogin}
+            onClick={onRegister}
           >
             Register
           </Button>
